@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getToken } from '../utils/token';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -13,13 +14,21 @@ export const apiClient = axios.create({
 // Request interceptor: Tự động đính kèm Bearer token từ localStorage (nếu có)
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => Promise.reject(error)
+);
+
+// Response interceptor: xử lý 401 Unauthorized tự động nếu token hết hạn
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
 // Hàm kiểm tra trạng thái hoạt động của Backend Server (/health)
@@ -30,4 +39,3 @@ export const checkHealth = async () => {
 };
 
 export default apiClient;
-
