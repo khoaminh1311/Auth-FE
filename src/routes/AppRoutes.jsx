@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import AuthPage from '../pages/AuthPage';
 import UserDashboardPage from '../pages/UserDashboardPage';
+import ChangePasswordPage from '../pages/ChangePasswordPage';
 import ProtectedRoute from './ProtectedRoute';
 
 export default function AppRoutes() {
@@ -31,12 +32,12 @@ export default function AppRoutes() {
         }
       />
 
-      {/* Placeholder Route Đổi mật khẩu (Phase 4) */}
+      {/* Route Đổi mật khẩu (Protected - Screen 3) */}
       <Route
         path="/change-password"
         element={
           <ProtectedRoute>
-            <UserDashboardPage />
+            <ChangePasswordPage />
           </ProtectedRoute>
         }
       />

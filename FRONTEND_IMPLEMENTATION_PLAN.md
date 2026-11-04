@@ -209,7 +209,7 @@
   2. Rà soát console trình duyệt: Đảm bảo không còn bất kỳ warning hay error nào.
   3. Biên soạn file `README.md` cho repository Frontend:
      - Tên dự án: **Auth Portal - Frontend Client (React + Tailwind CSS)**.
-     - Tech Stack: Ghi đúng React 18, Tailwind CSS, Vite, Axios, React Router. Không ghi công nghệ backend.
+     - Tech Stack: Ghi đúng React 19, Tailwind CSS, Vite, Axios, React Router. Không ghi công nghệ backend.
      - Hướng dẫn cài đặt & chạy: `npm install`, `npm run dev`, `npm run build`.
      - Cấu hình biến môi trường: Giải thích `VITE_API_URL` và file `.env.example`.
      - Mô tả 4 màn hình giao diện thực tế.
