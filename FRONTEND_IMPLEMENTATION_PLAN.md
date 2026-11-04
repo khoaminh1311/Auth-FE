@@ -18,7 +18,7 @@
    # → Tạo Pull Request (PR) trên GitHub
    # → Người dùng Review & Merge vào main
    ```
-
+5. Các lệnh commit, push... chỉ được gợi ý, không được phép tự chạy
 ---
 
 ## Phase 1: Setup Foundation, Design Tokens & Git Initialization
@@ -57,7 +57,7 @@
      ```
   4. Cấu hình file `.env.example` và `.env`:
      ```env
-     VITE_API_URL=http://localhost:5000/api
+     VITE_API_URL=http://localhost:3000/
      ```
   5. Viết `src/services/api.js` (cấu hình Axios instance cơ bản và test gọi thử endpoint `/health`).
 - **Tiêu chí nghiệm thu (Definition of Done):**
