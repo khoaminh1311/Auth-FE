@@ -1,109 +1,208 @@
-import { useState, useEffect } from 'react';
-import { checkHealth } from './services/api';
+import { useState } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import AppLayout from './components/layout/AppLayout';
+import Button from './components/common/Button';
+import Input from './components/common/Input';
+import Badge from './components/common/Badge';
 
-export default function App() {
-  const [healthStatus, setHealthStatus] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+// Icons extracted from Figma via MCP
+import shieldIcon from './assets/icons/shield.svg';
+import dashboardIcon from './assets/icons/dashboard.svg';
+import lockIcon from './assets/icons/lock.svg';
+import adminIcon from './assets/icons/admin.svg';
+import logoutIcon from './assets/icons/logout.svg';
+import refreshIcon from './assets/icons/refresh.svg';
+import copyIcon from './assets/icons/copy.svg';
+import emailIcon from './assets/icons/email.svg';
+import codeIcon from './assets/icons/code.svg';
+import userIcon from './assets/icons/user.svg';
 
-  useEffect(() => {
-    const fetchHealth = async () => {
-      try {
-        setLoading(true);
-        const data = await checkHealth();
-        setHealthStatus(data);
-        setError(null);
-      } catch (err) {
-        setError(err.message || 'Không thể kết nối đến Backend');
-      } finally {
-        setLoading(false);
-      }
-    };
+function Phase2Showcase() {
+  const [currentUser, setCurrentUser] = useState({
+    name: 'Flamingo',
+    email: 'flamingo@authportal.io',
+    role: 'user', // 'user' or 'admin'
+  });
+  const [testPassword, setTestPassword] = useState('');
+  const [testEmail, setTestEmail] = useState('');
 
-    fetchHealth();
-  }, []);
+  const toggleRole = () => {
+    setCurrentUser((prev) => ({
+      ...prev,
+      role: prev.role === 'admin' ? 'user' : 'admin',
+      name: prev.role === 'admin' ? 'Flamingo' : 'Admin Flamingo',
+      email: prev.role === 'admin' ? 'flamingo@authportal.io' : 'admin@authportal.io',
+    }));
+  };
+
+  const handleLogoutConfirm = () => {
+    alert('Đăng xuất thành công (Demo callback)!');
+  };
 
   return (
-    <div className="min-h-screen bg-app-bg text-secondary p-6 sm:p-12 font-sans flex flex-col items-center justify-center">
-      <div className="max-w-2xl w-full bg-white rounded-xl border border-card-border shadow-sm p-6 sm:p-8 space-y-6">
+    <AppLayout
+      title="Khung Giao Diện Dùng Chung & UI Components"
+      subtitle="PHASE 2 • SHARED WORKSPACE LAYOUT"
+      user={currentUser}
+      onLogoutConfirm={handleLogoutConfirm}
+    >
+      <div className="space-y-8">
         
-        {/* Header */}
-        <div className="border-b border-card-border pb-4">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-tertiary text-primary mb-2">
-            Phase 1 • Setup Foundation
+        {/* Banner giới thiệu Phase 2 */}
+        <div className="bg-primary text-white p-6 rounded-xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase bg-white/20 mb-2">
+              Phase 2 Nghiệm thu
+            </div>
+            <h2 className="text-xl font-bold">
+              Shared Layout, Drawer, Modal &amp; Nguyên tử UI
+            </h2>
+            <p className="text-sm text-blue-100 mt-1">
+              Toàn bộ icon đã trích xuất 100% từ Figma Node qua Figma MCP. Khung Layout đáp ứng chuẩn Responsive Mobile/Desktop.
+            </p>
           </div>
-          <h1 className="text-2xl font-bold text-secondary">
-            Auth Portal — Frontend Client
-          </h1>
-          <p className="text-sm text-neutral mt-1">
-            React 19 + Tailwind CSS + Axios • Bảng màu Enterprise Blueprint
-          </p>
+
+          <div className="shrink-0 flex items-center gap-2">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={toggleRole}
+            >
+              Chuyển vai trò: {currentUser.role === 'admin' ? 'Admin ➔ User' : 'User ➔ Admin'}
+            </Button>
+          </div>
         </div>
 
-        {/* Backend Health Check Box */}
-        <div className="bg-slate-50 border border-card-border rounded-lg p-4 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-neutral">
-              Trạng thái kết nối Backend (GET /health)
+        {/* 1. Bộ Icon trích xuất từ Figma MCP */}
+        <div className="bg-white p-6 rounded-xl border border-card-border shadow-sm space-y-4">
+          <div className="border-b border-card-border pb-3 flex items-center justify-between">
+            <h3 className="text-base font-bold text-secondary">
+              1. Bộ Icon Vector SVG Bóc Tách Từ Figma MCP
+            </h3>
+            <span className="text-xs text-neutral">
+              100% Asset Fidelity (Không dùng Lucide/FontAwesome)
             </span>
-            {loading ? (
-              <span className="text-xs font-medium text-neutral animate-pulse">
-                Đang kiểm tra...
-              </span>
-            ) : error ? (
-              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-700">
-                Lỗi kết nối
-              </span>
-            ) : (
-              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700">
-                Sẵn sàng (200 OK)
-              </span>
-            )}
           </div>
 
-          <div className="font-mono text-xs bg-slate-900 text-emerald-400 p-3 rounded overflow-x-auto">
-            {loading && <span>// Đang gửi request tới http://localhost:3000/health ...</span>}
-            {error && <span className="text-red-400">Error: {error}</span>}
-            {healthStatus && (
-              <pre>{JSON.stringify(healthStatus, null, 2)}</pre>
-            )}
-          </div>
-        </div>
-
-        {/* Design Tokens Verification */}
-        <div className="space-y-3">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-neutral">
-            Bảng màu Enterprise Blueprint Tokens
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
-            <div className="p-3 rounded-lg bg-primary text-white font-medium">
-              Primary (#2563EB)
-            </div>
-            <div className="p-3 rounded-lg bg-secondary text-white font-medium">
-              Secondary (#0F172A)
-            </div>
-            <div className="p-3 rounded-lg bg-tertiary text-primary font-medium border border-blue-200">
-              Tertiary (#EFF6FF)
-            </div>
-            <div className="p-3 rounded-lg bg-neutral text-white font-medium">
-              Neutral (#64748B)
-            </div>
-            <div className="p-3 rounded-lg bg-app-bg text-secondary font-medium border border-card-border">
-              App BG (#F8FAFC)
-            </div>
-            <div className="p-3 rounded-lg bg-white text-secondary font-medium border-2 border-card-border">
-              Card Border (#E2E8F0)
-            </div>
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+            {[
+              { name: 'shield.svg (Logo)', src: shieldIcon },
+              { name: 'dashboard.svg', src: dashboardIcon },
+              { name: 'lock.svg', src: lockIcon },
+              { name: 'admin.svg', src: adminIcon },
+              { name: 'logout.svg', src: logoutIcon },
+              { name: 'refresh.svg', src: refreshIcon },
+              { name: 'copy.svg', src: copyIcon },
+              { name: 'email.svg', src: emailIcon },
+              { name: 'code.svg', src: codeIcon },
+              { name: 'user.svg', src: userIcon },
+            ].map((icon) => (
+              <div
+                key={icon.name}
+                className="p-3 rounded-lg bg-slate-50 border border-card-border flex items-center gap-3"
+              >
+                <div className="w-8 h-8 rounded-md bg-white border border-slate-200 flex items-center justify-center shrink-0">
+                  <img src={icon.src} alt="" className="w-4 h-4" />
+                </div>
+                <span className="text-xs font-mono text-slate-700 truncate">
+                  {icon.name}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Phase 1 Completion Note */}
-        <div className="pt-2 border-t border-card-border flex items-center justify-between text-xs text-neutral">
-          <span>Branch hiện tại: <code className="bg-slate-100 px-1 py-0.5 rounded text-slate-800 font-mono">chore/project-setup</code></span>
-          <span className="text-emerald-600 font-medium">✓ Phase 1 Ready</span>
+        {/* 2. Common Buttons Showcase */}
+        <div className="bg-white p-6 rounded-xl border border-card-border shadow-sm space-y-4">
+          <div className="border-b border-card-border pb-3">
+            <h3 className="text-base font-bold text-secondary">
+              2. UI Component: Button (Các biến thể chuẩn)
+            </h3>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <Button variant="primary">Nút Primary (#2563EB)</Button>
+            <Button variant="secondary">Nút Secondary</Button>
+            <Button variant="danger">Nút Danger (#DC2626)</Button>
+            <Button
+              variant="danger-outline"
+              icon={<img src={logoutIcon} alt="" className="w-3.5 h-3.5" />}
+            >
+              Nút Danger Outline
+            </Button>
+            <Button variant="ghost">Nút Ghost</Button>
+            <Button variant="primary" loading>
+              Đang tải...
+            </Button>
+          </div>
+        </div>
+
+        {/* 3. Common Inputs Showcase */}
+        <div className="bg-white p-6 rounded-xl border border-card-border shadow-sm space-y-4">
+          <div className="border-b border-card-border pb-3">
+            <h3 className="text-base font-bold text-secondary">
+              3. UI Component: Input (Hỗ trợ Icon &amp; Toggle Password Edge-Safe)
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl">
+            <Input
+              label="Địa chỉ Email"
+              type="email"
+              placeholder="name@example.com"
+              value={testEmail}
+              onChange={(e) => setTestEmail(e.target.value)}
+              icon={<img src={emailIcon} alt="" className="w-4 h-4 opacity-60" />}
+              helperText="Nhập email hợp lệ đã đăng ký"
+            />
+
+            <Input
+              label="Mật khẩu"
+              type="password"
+              placeholder="••••••••"
+              value={testPassword}
+              onChange={(e) => setTestPassword(e.target.value)}
+              icon={<img src={lockIcon} alt="" className="w-4 h-4 opacity-60" />}
+              helperText="Hỗ trợ nút bật/tắt mắt bảo vệ mật khẩu"
+            />
+          </div>
+        </div>
+
+        {/* 4. Common Badges Showcase */}
+        <div className="bg-white p-6 rounded-xl border border-card-border shadow-sm space-y-4">
+          <div className="border-b border-card-border pb-3">
+            <h3 className="text-base font-bold text-secondary">
+              4. UI Component: Badge &amp; Method Tags
+            </h3>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <Badge variant="role-pill" dot dotColor="bg-primary">
+              VAI TRÒ: THÀNH VIÊN
+            </Badge>
+            <Badge variant="role-pill" dot dotColor="bg-emerald-500">
+              VAI TRÒ: QUẢN TRỊ VIÊN
+            </Badge>
+            <Badge variant="method-get">GET</Badge>
+            <Badge variant="method-post">POST</Badge>
+            <Badge variant="method-put">PUT</Badge>
+            <Badge variant="success" dot dotColor="bg-emerald-500">
+              Sẵn sàng
+            </Badge>
+            <Badge variant="danger">Lỗi xác thực</Badge>
+            <Badge variant="warning">Cảnh báo phiên</Badge>
+          </div>
         </div>
 
       </div>
-    </div>
+    </AppLayout>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Phase2Showcase />
+    </BrowserRouter>
   );
 }
