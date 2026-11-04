@@ -27,9 +27,9 @@
 - **Figma File Key:** YemSVfRSBRCHcf6PDSoExs
 - **Figma Node IDs (từng màn hình):**
   - Screen 1 (Authentication Portal - Login & Register): 1:2
-  - Screen 2 (User Workspace Dashboard - Profile & JWT Claims): 1:140
+  - Screen 2 (User Workspace Dashboard - Profile & JWT Claims): 1:524
   - Screen 3 (Password Security Workspace - Change Password): 1:337
-  - Screen 4 (Admin Console - RBAC Monitoring & Endpoint Matrix): 1:524
+  - Screen 4 (Admin Console - RBAC Monitoring & Endpoint Matrix): 1:140
 
 ---
 
