@@ -1,7 +1,9 @@
 import { NavLink } from 'react-router-dom';
 import shieldIcon from '../../assets/icons/shield.svg';
+import shieldInactiveIcon from '../../assets/icons/shield-inactive.svg';
+import shieldActiveIcon from '../../assets/icons/shield-active.svg';
 import dashboardIcon from '../../assets/icons/dashboard.svg';
-import lockIcon from '../../assets/icons/lock.svg';
+import dashboardActiveIcon from '../../assets/icons/dashboard-active.svg';
 import adminIcon from '../../assets/icons/admin.svg';
 import logoutIcon from '../../assets/icons/logout.svg';
 
@@ -17,11 +19,13 @@ export default function Sidebar({
       to: '/dashboard',
       label: 'Tổng quan',
       icon: dashboardIcon,
+      activeIcon: dashboardActiveIcon,
     },
     {
       to: '/change-password',
       label: 'Đổi mật khẩu',
-      icon: lockIcon,
+      icon: shieldInactiveIcon,
+      activeIcon: shieldActiveIcon,
     },
     ...(isAdmin
       ? [
@@ -29,6 +33,7 @@ export default function Sidebar({
             to: '/admin',
             label: 'Quản trị hệ thống',
             icon: adminIcon,
+            activeIcon: adminIcon,
           },
         ]
       : []),
@@ -71,11 +76,9 @@ export default function Sidebar({
                 {({ isActive }) => (
                   <>
                     <img
-                      src={item.icon}
+                      src={isActive ? item.activeIcon : item.icon}
                       alt=""
-                      className={`w-4 h-4 shrink-0 transition-opacity ${
-                        isActive ? 'opacity-100' : 'opacity-70'
-                      }`}
+                      className="w-4 h-4 shrink-0"
                     />
                     <span>{item.label}</span>
                   </>
@@ -108,7 +111,7 @@ export default function Sidebar({
         <button
           type="button"
           onClick={onOpenLogout}
-          className="w-full py-2 px-3 border border-red-200 hover:bg-red-50 text-red-600 rounded-lg flex items-center justify-center gap-2 text-sm font-semibold transition-colors cursor-pointer"
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 text-sm font-medium transition-colors cursor-pointer"
         >
           <img src={logoutIcon} alt="" className="w-3.5 h-3.5" />
           <span>Đăng xuất</span>
@@ -117,4 +120,3 @@ export default function Sidebar({
     </aside>
   );
 }
-
