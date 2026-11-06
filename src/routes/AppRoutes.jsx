@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import AuthPage from '../pages/AuthPage';
 import UserDashboardPage from '../pages/UserDashboardPage';
 import ChangePasswordPage from '../pages/ChangePasswordPage';
+import AdminDashboardPage from '../pages/AdminDashboardPage';
 import ProtectedRoute from './ProtectedRoute';
 
 export default function AppRoutes() {
@@ -42,12 +43,12 @@ export default function AppRoutes() {
         }
       />
 
-      {/* Placeholder Route Quản trị hệ thống (Phase 5) */}
+      {/* Route Quản trị hệ thống (Protected - Screen 4) */}
       <Route
         path="/admin"
         element={
           <ProtectedRoute requiredRole="admin">
-            <UserDashboardPage />
+            <AdminDashboardPage />
           </ProtectedRoute>
         }
       />

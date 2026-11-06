@@ -4,7 +4,8 @@ import shieldInactiveIcon from '../../assets/icons/shield-inactive.svg';
 import shieldActiveIcon from '../../assets/icons/shield-active.svg';
 import dashboardIcon from '../../assets/icons/dashboard.svg';
 import dashboardActiveIcon from '../../assets/icons/dashboard-active.svg';
-import adminIcon from '../../assets/icons/admin.svg';
+import adminActiveIcon from '../../assets/icons/admin-active.svg';
+import adminInactiveIcon from '../../assets/icons/admin-inactive.svg';
 import logoutIcon from '../../assets/icons/logout.svg';
 
 export default function Sidebar({
@@ -32,8 +33,8 @@ export default function Sidebar({
           {
             to: '/admin',
             label: 'Quản trị hệ thống',
-            icon: adminIcon,
-            activeIcon: adminIcon,
+            icon: adminInactiveIcon,
+            activeIcon: adminActiveIcon,
           },
         ]
       : []),

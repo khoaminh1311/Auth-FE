@@ -1,0 +1,562 @@
+NAME: "Untitled (Copy)"
+
+GLOBAL_VARS:
+fill_85065e9e:
+  - '#F8FAFC'
+fill_01b7a958:
+  - '#2563EB'
+effect_0d0ada4b:
+  boxShadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05)
+layout_177c5efc:
+  mode: none
+  sizing:
+    horizontal: hug
+    vertical: hug
+fill_658ab2fa:
+  - '#FFFFFF'
+style_0c05bce0:
+  fontFamily: Inter
+  fontStyle: Regular
+  fontWeight: 400
+  fontSize: 14
+  lineHeight: 20px
+  textAlignHorizontal: LEFT
+  textAlignVertical: CENTER
+layout_26993d1a:
+  mode: none
+  sizing:
+    horizontal: fixed
+    vertical: fixed
+  dimensions:
+    width: 12
+    height: 12
+fill_c8fa25b1:
+  - '#E2E8F0'
+style_b797bb4d:
+  fontFamily: Inter
+  fontStyle: Semi Bold
+  fontWeight: 600
+  fontSize: 12
+  lineHeight: 16px
+  letterSpacing: 0.05em
+  textCase: UPPER
+  textAlignHorizontal: LEFT
+  textAlignVertical: CENTER
+fill_ba795e8a:
+  - '#64748B'
+fill_13cb9f8f:
+  - '#EFF6FF'
+layout_5c79c5b1:
+  mode: column
+  alignSelf: stretch
+  alignItems: stretch
+  sizing:
+    horizontal: fill
+    vertical: hug
+layout_56d3c81c:
+  mode: none
+  sizing:
+    horizontal: fill
+    vertical: hug
+style_ac156272:
+  fontFamily: Inter
+  fontStyle: Bold
+  fontWeight: 700
+  fontSize: 24
+  lineHeight: 32px
+  textAlignHorizontal: LEFT
+  textAlignVertical: CENTER
+fill_78125c34:
+  - '#0F172A'
+style_1ec497a5:
+  fontFamily: Inter
+  fontStyle: Medium
+  fontWeight: 500
+  fontSize: 12
+  lineHeight: 16px
+  textAlignHorizontal: LEFT
+  textAlignVertical: CENTER
+fill_29b74d47:
+  - '#059669'
+layout_0a903789:
+  mode: none
+  sizing:
+    horizontal: fixed
+    vertical: fixed
+  dimensions:
+    width: 13.33
+    height: 16.67
+style_ce837a64:
+  fontFamily: Inter
+  fontStyle: Semi Bold
+  fontWeight: 600
+  fontSize: 12
+  lineHeight: 16px
+  textAlignHorizontal: LEFT
+  textAlignVertical: CENTER
+fill_dcace0a8:
+  - '#334155'
+layout_0f75b428:
+  mode: row
+  alignSelf: stretch
+  justifyContent: center
+  sizing:
+    horizontal: fill
+    vertical: hug
+layout_b001bdfb:
+  mode: row
+  padding: 3px 10px
+  sizing:
+    horizontal: hug
+    vertical: hug
+style_f00e9169:
+  fontFamily: Liberation Mono
+  fontStyle: Bold
+  fontWeight: 700
+  fontSize: 12
+  lineHeight: 16px
+  textAlignHorizontal: LEFT
+  textAlignVertical: CENTER
+style_6a7b0be8:
+  fontFamily: Liberation Mono
+  fontStyle: Bold
+  fontWeight: 600
+  fontSize: 12
+  lineHeight: 16px
+  textAlignHorizontal: LEFT
+  textAlignVertical: CENTER
+fill_e4a94f71:
+  - '#475569'
+fill_bbf51b5d:
+  - '#BFDBFE'
+fill_77831e72:
+  - '#1E293B'
+layout_63d6be96:
+  mode: row
+  alignSelf: stretch
+  padding: 10px 12px
+  alignItems: center
+  gap: 12px
+  sizing:
+    horizontal: fill
+    vertical: hug
+style_14c88898:
+  fontFamily: Inter
+  fontStyle: Medium
+  fontWeight: 500
+  fontSize: 14
+  lineHeight: 20px
+  textAlignHorizontal: LEFT
+  textAlignVertical: CENTER
+fill_4475c36f:
+  - '#DC2626'
+
+ELEMENTS:
+EL-bb582553:
+  type: FRAME
+  layout:
+    mode: row
+    alignSelf: stretch
+    justifyContent: space-between
+    alignItems: center
+    sizing:
+      horizontal: fill
+      vertical: hug
+EL-dfdf56f9:
+  type: FRAME
+  layout:
+    mode: column
+    alignSelf: stretch
+    sizing:
+      horizontal: fill
+      vertical: hug
+EL-83bc679e:
+  type: FRAME
+  layout:
+    mode: column
+    alignItems: center
+    sizing:
+      horizontal: hug
+      vertical: hug
+EL-e935b784:
+  type: FRAME
+  layout:
+    mode: column
+    padding: 24px
+    justifyContent: space-between
+    alignItems: stretch
+    sizing:
+      horizontal: fill
+      vertical: hug
+  fills: fill_658ab2fa
+  strokes: fill_c8fa25b1
+  strokeWeight: 1px
+  effects: effect_0d0ada4b
+  borderRadius: 12px
+EL-2f9fe287:
+  type: FRAME
+  layout:
+    mode: column
+    sizing:
+      horizontal: hug
+      vertical: hug
+EL-f80146ab:
+  type: FRAME
+  layout:
+    mode: column
+    padding: 8px
+    sizing:
+      horizontal: hug
+      vertical: hug
+  fills: fill_13cb9f8f
+  borderRadius: 8px
+EL-a9b94e16:
+  type: FRAME
+  layout:
+    mode: column
+    alignSelf: stretch
+    padding: 12px 0px
+    alignItems: stretch
+    sizing:
+      horizontal: fill
+      vertical: hug
+EL-e9077466:
+  type: FRAME
+  layout: layout_5c79c5b1
+EL-5a061081:
+  type: FRAME
+  layout:
+    mode: row
+    alignSelf: stretch
+    padding: 12px 0px 0px
+    alignItems: center
+    gap: 6px
+    sizing:
+      horizontal: fill
+      vertical: hug
+  strokes: fill_c8fa25b1
+  strokeWeight: 1px 0px 0px
+EL-7d67c314:
+  type: RECTANGLE
+  layout:
+    mode: none
+    sizing:
+      horizontal: fixed
+      vertical: fixed
+    dimensions:
+      width: 8
+      height: 8
+  fills:
+    - '#10B981'
+  borderRadius: 9999px
+EL-2df0d05a:
+  type: IMAGE-SVG
+  layout:
+    mode: none
+    sizing:
+      horizontal: fixed
+      vertical: fixed
+    dimensions:
+      width: 15
+      height: 16.67
+  fills: fill_01b7a958
+EL-8e53ecf5:
+  type: FRAME
+  layout:
+    mode: column
+    padding: 16.5px 24px 12.5px
+    sizing:
+      horizontal: fixed
+      vertical: hug
+    dimensions:
+      width: 146.88
+EL-92be5a32:
+  type: FRAME
+  layout: layout_b001bdfb
+  fills:
+    - '#ECFDF5'
+  strokes:
+    - '#A7F3D0'
+  strokeWeight: 1px
+  borderRadius: 6px
+EL-efd34ff5:
+  type: TEXT
+  layout: layout_177c5efc
+  text: GET
+  textStyle: style_f00e9169
+  fills:
+    - '#047857'
+EL-d135944c:
+  type: FRAME
+  layout:
+    mode: column
+    padding: 18.5px 24px
+    sizing:
+      horizontal: fixed
+      vertical: hug
+    dimensions:
+      width: 230.92
+EL-b6c50f53:
+  type: FRAME
+  layout:
+    mode: column
+    padding: 18px 24px 19px
+    sizing:
+      horizontal: fixed
+      vertical: hug
+    dimensions:
+      width: 152.55
+EL-e0826346:
+  type: TEXT
+  layout: layout_177c5efc
+  text: Public
+  textStyle: style_1ec497a5
+  fills: fill_dcace0a8
+EL-6118a283:
+  type: FRAME
+  layout:
+    mode: column
+    padding: 16px 24px 17px
+    sizing:
+      horizontal: fixed
+      vertical: hug
+    dimensions:
+      width: 427.66
+EL-45ff3a9f:
+  type: FRAME
+  layout: layout_0f75b428
+  strokes: fill_c8fa25b1
+  strokeWeight: 1px 0px 0px
+EL-9138b043:
+  type: FRAME
+  layout: layout_b001bdfb
+  fills: fill_13cb9f8f
+  strokes: fill_bbf51b5d
+  strokeWeight: 1px
+  borderRadius: 6px
+EL-d26f8607:
+  type: TEXT
+  layout: layout_177c5efc
+  text: POST
+  textStyle: style_f00e9169
+  fills:
+    - '#1D4ED8'
+EL-b5c99558:
+  type: FRAME
+  layout:
+    mode: column
+    padding: 19px 24px 18px
+    sizing:
+      horizontal: fixed
+      vertical: hug
+    dimensions:
+      width: 152.55
+EL-2a2ba5bd:
+  type: TEXT
+  layout: layout_177c5efc
+  text: Protected \(Token\)
+  textStyle: style_1ec497a5
+  fills: fill_dcace0a8
+EL-97b540e4:
+  type: FRAME
+  layout: layout_63d6be96
+  borderRadius: 8px
+
+NODES:
+[FRAME] "Admin Dashboard" #1:140 layout={"mode":"column","padding":"0px 0px 0px 256px","alignItems":"stretch","sizing":{"horizontal":"contextual","vertical":"hug"},"designedWidth":"1280px"} fills=fill_85065e9e
+  [FRAME] "Fixed Topbar Header → Main" #1:141 layout={"mode":"column","alignSelf":"stretch","padding":"96px 32px 142px","alignItems":"stretch","gap":"24px","sizing":{"horizontal":"fill","vertical":"hug"}}
+    [FRAME] "Section" #1:142 layout={"mode":"column","alignSelf":"stretch","padding":"24px","alignItems":"stretch","sizing":{"horizontal":"fill","vertical":"hug"}} fills=fill_01b7a958 effects=effect_0d0ada4b borderRadius=12px
+      [FRAME] "Container" #1:143 template=EL-bb582553
+        [FRAME] "Container" #1:144 layout={"mode":"column","alignItems":"stretch","gap":"4px","sizing":{"horizontal":"hug","vertical":"hug"}}
+          [FRAME] "Heading 2" #1:145 template=EL-dfdf56f9
+            [TEXT] #1:146 layout=layout_177c5efc fills=fill_658ab2fa textStyle={"fontFamily":"Inter","fontStyle":"Bold","fontWeight":700,"fontSize":24,"lineHeight":"32px","letterSpacing":"-0.025em","textAlignHorizontal":"LEFT","textAlignVertical":"CENTER"} text="Trung tâm Quản trị Xác thực & Phân quyền RBAC"
+          [FRAME] "Container" #1:147 template=EL-dfdf56f9
+            [TEXT] #1:148 layout=layout_177c5efc fills=["#DBEAFE"] textStyle=style_0c05bce0 text="Giám sát cấu trúc bảo vệ tài nguyên, kiểm soát phân quyền truy cập endpoint và theo\\ndõi trạng thái hoạt động của hệ thống."
+        [FRAME] "Container" #1:149 layout={"mode":"row","alignItems":"center","wrap":true,"gap":"12px","sizing":{"horizontal":"hug","vertical":"hug"}}
+          [FRAME] "Overlay" #1:150 layout={"mode":"column","padding":"6px 12px","sizing":{"horizontal":"hug","vertical":"hug"}} fills=["rgba(255, 255, 255, 0.15)"] borderRadius=9999px
+            [TEXT] #1:151 layout=layout_177c5efc fills=fill_658ab2fa textStyle={"fontFamily":"Liberation Mono","fontStyle":"Regular","fontWeight":400,"fontSize":12,"lineHeight":"16px","letterSpacing":"-0.025em","textAlignHorizontal":"LEFT","textAlignVertical":"CENTER"} text="\\[GET\\] /api/auth/me"
+          [FRAME] "Button" #1:152 layout={"mode":"row","padding":"8px 16px","alignItems":"center","gap":"8px","sizing":{"horizontal":"hug","vertical":"hug"}} fills=fill_658ab2fa effects=effect_0d0ada4b borderRadius=8px
+            [FRAME] "Container" #1:153 template=EL-83bc679e
+              [IMAGE-SVG] "Icon" #1:154 layout=layout_26993d1a fills=fill_01b7a958
+            [FRAME] "Container" #1:155 template=EL-83bc679e
+              [TEXT] #1:156 layout=layout_177c5efc fills=fill_01b7a958 textStyle={"fontFamily":"Inter","fontStyle":"Medium","fontWeight":500,"fontSize":14,"lineHeight":"20px","textAlignHorizontal":"CENTER","textAlignVertical":"CENTER"} text="Làm mới dữ liệu"
+    [FRAME] "Section" #1:157 layout={"mode":"row","alignSelf":"stretch","justifyContent":"center","gap":"24px","sizing":{"horizontal":"fill","vertical":"hug"}}
+      [FRAME] "Background+Border+Shadow" #1:158 template=EL-e935b784
+        [FRAME] "Container" #1:159 template=EL-bb582553
+          [FRAME] "Container" #1:160 template=EL-2f9fe287
+            [TEXT] #1:161 layout=layout_177c5efc fills=fill_ba795e8a textStyle=style_b797bb4d text="TRẠNG THÁI SERVER"
+          [FRAME] "Background" #1:162 template=EL-f80146ab
+            [IMAGE-SVG] "Icon" #1:163 layout={"mode":"none","sizing":{"horizontal":"fixed","vertical":"fixed"},"dimensions":{"width":15,"height":15.83}} fills=fill_01b7a958
+        [FRAME] "Margin" #1:164 template=EL-a9b94e16
+          [FRAME] "Container" #1:165 template=EL-e9077466
+            [TEXT] #1:166 layout=layout_56d3c81c fills=fill_78125c34 textStyle=style_ac156272 text="200 OK"
+        [FRAME] "HorizontalBorder" #1:167 template=EL-5a061081
+          [RECTANGLE] "Background" #1:168 template=EL-7d67c314
+          [FRAME] "Container" #1:169 template=EL-2f9fe287
+            [TEXT] #1:170 layout=layout_177c5efc fills=fill_29b74d47 textStyle=style_1ec497a5 text="Sẵn sàng"
+      [FRAME] "Background+Border+Shadow" #1:171 template=EL-e935b784
+        [FRAME] "Container" #1:172 template=EL-bb582553
+          [FRAME] "Container" #1:173 template=EL-2f9fe287
+            [TEXT] #1:174 layout=layout_177c5efc fills=fill_ba795e8a textStyle=style_b797bb4d text="CƠ CHẾ PHÂN QUYỀN"
+          [FRAME] "Background" #1:175 template=EL-f80146ab
+            [IMAGE-SVG] "Icon" #1:176 template=EL-2df0d05a
+        [FRAME] "Margin" #1:177 template=EL-a9b94e16
+          [FRAME] "Container" #1:178 template=EL-e9077466
+            [TEXT] #1:179 layout=layout_56d3c81c fills=fill_78125c34 textStyle=style_ac156272 text="2 Cấp độ"
+        [FRAME] "HorizontalBorder" #1:180 layout={"mode":"column","alignSelf":"stretch","padding":"12px 0px 0px","sizing":{"horizontal":"fill","vertical":"hug"}} strokes=fill_c8fa25b1 strokeWeight="1px 0px 0px"
+          [TEXT] #1:181 layout=layout_177c5efc fills=fill_ba795e8a textStyle=style_1ec497a5 text="ADMIN \\(Toàn quyền\\) & USER \\(Thành viên\\)"
+      [FRAME] "Background+Border+Shadow" #1:182 template=EL-e935b784
+        [FRAME] "Container" #1:183 template=EL-bb582553
+          [FRAME] "Container" #1:184 template=EL-2f9fe287
+            [TEXT] #1:185 layout=layout_177c5efc fills=fill_ba795e8a textStyle=style_b797bb4d text="GIỚI HẠN TẦN SUẤT API"
+          [FRAME] "Background" #1:186 template=EL-f80146ab
+            [IMAGE-SVG] "Icon" #1:187 layout=layout_0a903789 fills=fill_01b7a958
+        [FRAME] "Margin" #1:188 template=EL-a9b94e16
+          [FRAME] "Container" #1:189 template=EL-e9077466
+            [TEXT] #1:190 layout=layout_56d3c81c fills=fill_78125c34 textStyle=style_ac156272 text="20 req / 15m"
+        [FRAME] "HorizontalBorder" #1:191 template=EL-5a061081
+          [RECTANGLE] "Background" #1:192 template=EL-7d67c314
+          [FRAME] "Container" #1:193 template=EL-2f9fe287
+            [TEXT] #1:194 layout=layout_177c5efc fills=fill_29b74d47 textStyle=style_1ec497a5 text="Bảo vệ Brute-Force & DoS: Hoạt động"
+    [FRAME] "Section" #1:195 layout=layout_5c79c5b1 fills=fill_658ab2fa strokes=fill_c8fa25b1 strokeWeight=1px effects=effect_0d0ada4b borderRadius=12px
+      [FRAME] "HorizontalBorder" #1:196 layout={"mode":"row","alignSelf":"stretch","padding":"24px","justifyContent":"space-between","alignItems":"center","sizing":{"horizontal":"fill","vertical":"hug"}} strokes=fill_c8fa25b1 strokeWeight="0px 0px 1px"
+        [FRAME] "Container" #1:197 layout={"mode":"column","alignItems":"stretch","gap":"2px","sizing":{"horizontal":"hug","vertical":"hug"}}
+          [FRAME] "Heading 3" #1:198 template=EL-dfdf56f9
+            [TEXT] #1:199 layout=layout_177c5efc fills=fill_78125c34 textStyle={"fontFamily":"Inter","fontStyle":"Bold","fontWeight":700,"fontSize":18,"lineHeight":"28px","textAlignHorizontal":"LEFT","textAlignVertical":"CENTER"} text="Ma trận Phân quyền Endpoint API \\(RBAC\\)"
+          [FRAME] "Container" #1:200 template=EL-dfdf56f9
+            [TEXT] #1:201 layout=layout_177c5efc fills=fill_ba795e8a textStyle=style_0c05bce0 text="Cấu hình kiểm soát truy cập và middleware bảo vệ tài nguyên hệ thống."
+        [FRAME] "Container" #1:202 layout={"mode":"none","sizing":{"horizontal":"fixed","vertical":"fixed"},"dimensions":{"width":176.05,"height":24}}
+          [FRAME] "Background+Border" #1:203 layout={"mode":"row","padding":"3.5px 12px","sizing":{"horizontal":"hug","vertical":"hug"},"locationRelativeToParent":{"x":0,"y":1}} fills=["#F1F5F9"] strokes=fill_c8fa25b1 strokeWeight=1px borderRadius=9999px
+            [TEXT] #1:204 layout=layout_177c5efc fills=fill_dcace0a8 textStyle=style_ce837a64 text="6 Tuyến đường Hoạt động"
+      [FRAME] "Table" #1:205 layout={"mode":"column","overflowScroll":["x","y"],"alignSelf":"stretch","alignItems":"stretch","gap":"-1px","sizing":{"horizontal":"fill","vertical":"hug"}}
+        [FRAME] "Header → Row" #1:206 layout=layout_0f75b428 fills=["rgba(248, 250, 252, 0.7)"] strokes=fill_c8fa25b1 strokeWeight="0px 0px 1px"
+          [FRAME] "Cell" #1:207 layout={"mode":"column","padding":"14px 24px","sizing":{"horizontal":"fixed","vertical":"hug"},"dimensions":{"width":146.88}}
+            [TEXT] #1:208 layout=layout_177c5efc fills=fill_ba795e8a textStyle=style_b797bb4d text="PHƯƠNG THỨC"
+          [FRAME] "Cell" #1:209 layout={"mode":"column","padding":"14px 24px","sizing":{"horizontal":"fixed","vertical":"hug"},"dimensions":{"width":230.92}}
+            [TEXT] #1:210 layout=layout_177c5efc fills=fill_ba795e8a textStyle=style_b797bb4d text="TUYẾN ĐƯỜNG"
+          [FRAME] "Cell" #1:211 layout={"mode":"column","padding":"14px 24px","sizing":{"horizontal":"fixed","vertical":"hug"},"dimensions":{"width":152.55}}
+            [TEXT] #1:212 layout=layout_177c5efc fills=fill_ba795e8a textStyle=style_b797bb4d text="QUYỀN HẠN"
+          [FRAME] "Cell" #1:213 layout={"mode":"column","padding":"14px 24px","sizing":{"horizontal":"fixed","vertical":"hug"},"dimensions":{"width":427.66}}
+            [TEXT] #1:214 layout=layout_177c5efc fills=fill_ba795e8a textStyle=style_b797bb4d text="MÔ TẢ"
+        [FRAME] "Body" #1:215 layout={"mode":"column","alignSelf":"stretch","alignItems":"stretch","gap":"-1px","sizing":{"horizontal":"fill","vertical":"hug"}}
+          [FRAME] "Row" #1:216 layout=layout_0f75b428
+            [FRAME] "Data" #1:217 template=EL-8e53ecf5
+              [FRAME] "Background+Border" #1:218 template=EL-92be5a32
+                [TEXT] #1:219 template=EL-efd34ff5
+            [FRAME] "Data" #1:220 template=EL-d135944c
+              [TEXT] #1:221 layout=layout_177c5efc fills=fill_78125c34 textStyle=style_6a7b0be8 text="/health"
+            [FRAME] "Data" #1:222 template=EL-b6c50f53
+              [TEXT] #1:223 template=EL-e0826346
+            [FRAME] "Data" #1:224 template=EL-6118a283
+              [TEXT] #1:225 layout=layout_177c5efc fills=fill_e4a94f71 textStyle=style_0c05bce0 text="Kiểm tra trạng thái hoạt động của server và database."
+          [FRAME] "Row" #1:226 template=EL-45ff3a9f
+            [FRAME] "Data" #1:227 template=EL-8e53ecf5
+              [FRAME] "Background+Border" #1:228 template=EL-9138b043
+                [TEXT] #1:229 template=EL-d26f8607
+            [FRAME] "Data" #1:230 template=EL-d135944c
+              [TEXT] #1:231 layout=layout_177c5efc fills=fill_78125c34 textStyle=style_6a7b0be8 text="/api/auth/register"
+            [FRAME] "Data" #1:232 template=EL-b6c50f53
+              [TEXT] #1:233 template=EL-e0826346
+            [FRAME] "Data" #1:234 template=EL-6118a283
+              [TEXT] #1:235 layout=layout_177c5efc fills=fill_e4a94f71 textStyle=style_0c05bce0 text="Đăng ký tài khoản mới \\(mặc định role user\\)."
+          [FRAME] "Row" #1:236 template=EL-45ff3a9f
+            [FRAME] "Data" #1:237 template=EL-8e53ecf5
+              [FRAME] "Background+Border" #1:238 template=EL-9138b043
+                [TEXT] #1:239 template=EL-d26f8607
+            [FRAME] "Data" #1:240 template=EL-d135944c
+              [TEXT] #1:241 layout=layout_177c5efc fills=fill_78125c34 textStyle=style_6a7b0be8 text="/api/auth/login"
+            [FRAME] "Data" #1:242 template=EL-b6c50f53
+              [TEXT] #1:243 template=EL-e0826346
+            [FRAME] "Data" #1:244 template=EL-6118a283
+              [TEXT] #1:245 layout=layout_177c5efc fills=fill_e4a94f71 textStyle=style_0c05bce0 text="Đăng nhập bằng email/mật khẩu, nhận chuỗi JWT token."
+          [FRAME] "Row" #1:246 template=EL-45ff3a9f
+            [FRAME] "Data" #1:247 template=EL-8e53ecf5
+              [FRAME] "Background+Border" #1:248 template=EL-92be5a32
+                [TEXT] #1:249 template=EL-efd34ff5
+            [FRAME] "Data" #1:250 template=EL-d135944c
+              [TEXT] #1:251 layout=layout_177c5efc fills=fill_78125c34 textStyle=style_6a7b0be8 text="/api/auth/me"
+            [FRAME] "Data" #1:252 template=EL-b5c99558
+              [TEXT] #1:253 template=EL-2a2ba5bd
+            [FRAME] "Data" #1:254 template=EL-6118a283
+              [TEXT] #1:255 layout=layout_177c5efc fills=fill_e4a94f71 textStyle=style_0c05bce0 text="Lấy thông tin hồ sơ của tài khoản đang đăng nhập."
+          [FRAME] "Row" #1:256 template=EL-45ff3a9f
+            [FRAME] "Data" #1:257 template=EL-8e53ecf5
+              [FRAME] "Background+Border" #1:258 layout=layout_b001bdfb fills=["#FFFBEB"] strokes=["#FDE68A"] strokeWeight=1px borderRadius=6px
+                [TEXT] #1:259 layout=layout_177c5efc fills=["#B45309"] textStyle=style_f00e9169 text="PUT"
+            [FRAME] "Data" #1:260 template=EL-d135944c
+              [TEXT] #1:261 layout=layout_177c5efc fills=fill_78125c34 textStyle=style_6a7b0be8 text="/api/auth/change-password"
+            [FRAME] "Data" #1:262 template=EL-b5c99558
+              [TEXT] #1:263 template=EL-2a2ba5bd
+            [FRAME] "Data" #1:264 template=EL-6118a283
+              [TEXT] #1:265 layout=layout_177c5efc fills=fill_e4a94f71 textStyle=style_0c05bce0 text="Đổi mật khẩu, vô hiệu hóa token cũ."
+          [FRAME] "Row" #1:266 template=EL-45ff3a9f
+            [FRAME] "Data" #1:267 layout={"mode":"column","padding":"16.5px 24px 12px","sizing":{"horizontal":"fixed","vertical":"hug"},"dimensions":{"width":146.88}}
+              [FRAME] "Background+Border" #1:268 template=EL-9138b043
+                [TEXT] #1:269 template=EL-d26f8607
+            [FRAME] "Data" #1:270 layout={"mode":"column","padding":"18.5px 24px 18px","sizing":{"horizontal":"fixed","vertical":"hug"},"dimensions":{"width":230.92}}
+              [TEXT] #1:271 layout=layout_177c5efc fills=fill_78125c34 textStyle=style_6a7b0be8 text="/api/auth/logout"
+            [FRAME] "Data" #1:272 layout={"mode":"column","padding":"19px 24px 17.5px","sizing":{"horizontal":"fixed","vertical":"hug"},"dimensions":{"width":152.55}}
+              [TEXT] #1:273 template=EL-2a2ba5bd
+            [FRAME] "Data" #1:274 layout={"mode":"column","padding":"16px 24px","sizing":{"horizontal":"fixed","vertical":"hug"},"dimensions":{"width":427.66}}
+              [TEXT] #1:275 layout=layout_177c5efc fills=fill_e4a94f71 textStyle=style_0c05bce0 text="Đăng xuất \\(Stateless - hướng dẫn client xóa token\\)."
+  [FRAME] "Header" #1:276 layout={"mode":"row","padding":"0px 32px","justifyContent":"space-between","alignItems":"center","sizing":{"horizontal":"fixed","vertical":"fixed"},"position":"absolute","locationRelativeToParent":{"x":256,"y":0},"dimensions":{"width":1024,"height":64}} fills=["rgba(255, 255, 255, 0.9)"] strokes=fill_c8fa25b1 strokeWeight="0px 0px 1px" effects={"backdropFilter":"blur(8px)"}
+    [FRAME] "Container" #1:277 layout={"mode":"column","justifyContent":"center","alignItems":"stretch","sizing":{"horizontal":"hug","vertical":"hug"}}
+      [FRAME] "Margin" #1:278 layout={"mode":"column","alignSelf":"stretch","padding":"0px 0px 4px","alignItems":"stretch","sizing":{"horizontal":"fill","vertical":"hug"}}
+        [FRAME] "Container" #1:279 template=EL-e9077466
+          [TEXT] #1:280 layout=layout_56d3c81c fills=fill_ba795e8a textStyle={"fontFamily":"Inter","fontStyle":"Semi Bold","fontWeight":600,"fontSize":11,"lineHeight":"11px","letterSpacing":"0.05em","textCase":"UPPER","textAlignHorizontal":"LEFT","textAlignVertical":"CENTER"} text="CỔNG XÁC THỰC BẢO MẬT"
+      [FRAME] "Heading 1" #1:281 template=EL-dfdf56f9
+        [TEXT] #1:282 layout=layout_177c5efc fills=fill_78125c34 textStyle={"fontFamily":"Inter","fontStyle":"Bold","fontWeight":700,"fontSize":20,"lineHeight":"28px","textAlignHorizontal":"LEFT","textAlignVertical":"CENTER"} text="Quản trị hệ thống & Phân quyền RBAC"
+    [FRAME] "Container" #1:283 layout={"mode":"row","alignItems":"center","gap":"16.010000228881836px","sizing":{"horizontal":"hug","vertical":"hug"}}
+      [FRAME] "Background+Border" #1:284 layout={"mode":"row","padding":"4px 12px","alignItems":"center","gap":"6px","sizing":{"horizontal":"hug","vertical":"hug"}} fills=fill_13cb9f8f strokes=fill_bbf51b5d strokeWeight=1px borderRadius=9999px
+        [RECTANGLE] "Background" #1:285 layout={"mode":"none","sizing":{"horizontal":"fixed","vertical":"fixed"},"dimensions":{"width":6,"height":6}} fills=fill_01b7a958 borderRadius=9999px
+        [FRAME] "Container" #1:286 template=EL-2f9fe287
+          [TEXT] #1:287 layout=layout_177c5efc fills=fill_01b7a958 textStyle=style_ce837a64 text="VAI TRÒ: QUẢN TRỊ VIÊN"
+      [FRAME] "VerticalBorder" #1:288 layout={"mode":"row","padding":"0px 0px 0px 12px","alignItems":"center","gap":"9.989999771118164px","sizing":{"horizontal":"hug","vertical":"hug"}} strokes=fill_c8fa25b1 strokeWeight="0px 0px 0px 1px"
+        [FRAME] "Container" #1:289 template=EL-2f9fe287
+          [TEXT] #1:290 layout=layout_177c5efc fills=fill_77831e72 textStyle={"fontFamily":"Inter","fontStyle":"Semi Bold","fontWeight":600,"fontSize":14,"lineHeight":"20px","textAlignHorizontal":"LEFT","textAlignVertical":"CENTER"} text="Admin Flamingo"
+        [FRAME] "Background" #1:291 layout={"mode":"row","justifyContent":"center","alignItems":"center","sizing":{"horizontal":"fixed","vertical":"fixed"},"dimensions":{"width":32,"height":32}} fills=fill_01b7a958 borderRadius=9999px
+          [FRAME] "Container" #1:292 template=EL-2f9fe287
+            [IMAGE-SVG] "Icon" #1:293 layout=layout_26993d1a fills=fill_658ab2fa
+  [FRAME] "Aside - Left Sidebar Navigation" #1:294 layout={"mode":"column","justifyContent":"space-between","alignItems":"stretch","sizing":{"horizontal":"fixed","vertical":"fixed"},"position":"absolute","locationRelativeToParent":{"x":0,"y":0},"dimensions":{"width":256,"height":1044}} fills=fill_658ab2fa strokes=fill_c8fa25b1 strokeWeight="0px 1px 0px 0px"
+    [FRAME] "Container" #1:295 template=EL-e9077466
+      [FRAME] "Top Brand Header" #1:296 layout={"mode":"row","alignSelf":"stretch","padding":"0px 24px","alignItems":"center","sizing":{"horizontal":"fill","vertical":"fixed"},"dimensions":{"height":64}} strokes=fill_c8fa25b1 strokeWeight="0px 0px 1px"
+        [FRAME] "Container" #1:297 layout={"mode":"row","alignItems":"center","gap":"12px","sizing":{"horizontal":"hug","vertical":"hug"}}
+          [FRAME] "Background+Shadow" #1:298 layout={"mode":"row","justifyContent":"center","alignItems":"center","sizing":{"horizontal":"fixed","vertical":"fixed"},"dimensions":{"width":36,"height":36}} fills=fill_01b7a958 effects=effect_0d0ada4b borderRadius=8px
+            [FRAME] "Container" #1:299 template=EL-2f9fe287
+              [IMAGE-SVG] "Icon" #1:300 layout=layout_0a903789 fills=fill_658ab2fa
+          [FRAME] "Container" #1:301 template=EL-2f9fe287
+            [TEXT] #1:302 layout=layout_177c5efc fills=fill_78125c34 textStyle={"fontFamily":"Inter","fontStyle":"Bold","fontWeight":700,"fontSize":16,"lineHeight":"24px","letterSpacing":"-0.025em","textAlignHorizontal":"LEFT","textAlignVertical":"CENTER"} text="Auth Portal"
+      [FRAME] "Nav Links" #1:303 layout={"mode":"column","alignSelf":"stretch","padding":"16px","alignItems":"stretch","gap":"8px","sizing":{"horizontal":"fill","vertical":"hug"}}
+        [FRAME] "Container" #1:304 layout={"mode":"column","alignSelf":"stretch","padding":"0px 12px","alignItems":"stretch","sizing":{"horizontal":"fill","vertical":"hug"}}
+          [TEXT] #1:305 layout=layout_56d3c81c fills=["#94A3B8"] textStyle={"fontFamily":"Inter","fontStyle":"Semi Bold","fontWeight":600,"fontSize":11,"lineHeight":"16.5px","letterSpacing":"0.05em","textCase":"UPPER","textAlignHorizontal":"LEFT","textAlignVertical":"CENTER"} text="DANH MỤC LÀM VIỆC"
+        [FRAME] "Nav" #1:306 layout={"mode":"column","alignSelf":"stretch","alignItems":"stretch","gap":"4px","sizing":{"horizontal":"fill","vertical":"hug"}}
+          [FRAME] "Link" #1:307 template=EL-97b540e4
+            [FRAME] "Container" #1:308 template=EL-2f9fe287
+              [IMAGE-SVG] "Icon" #1:309 layout={"mode":"none","sizing":{"horizontal":"fixed","vertical":"fixed"},"dimensions":{"width":15,"height":15}} fills=fill_e4a94f71
+            [FRAME] "Container" #1:310 template=EL-2f9fe287
+              [TEXT] #1:311 layout=layout_177c5efc fills=fill_e4a94f71 textStyle=style_14c88898 text="Tổng quan"
+          [FRAME] "Link" #1:312 template=EL-97b540e4
+            [FRAME] "Container" #1:313 template=EL-2f9fe287
+              [IMAGE-SVG] "Icon" #1:314 layout=layout_0a903789 fills=fill_e4a94f71
+            [FRAME] "Container" #1:315 template=EL-2f9fe287
+              [TEXT] #1:316 layout=layout_177c5efc fills=fill_e4a94f71 textStyle=style_14c88898 text="Đổi mật khẩu"
+          [FRAME] "Link" #1:317 layout=layout_63d6be96 fills=fill_13cb9f8f borderRadius=8px
+            [FRAME] "Container" #1:318 template=EL-2f9fe287
+              [IMAGE-SVG] "Icon" #1:319 template=EL-2df0d05a
+            [FRAME] "Container" #1:320 template=EL-2f9fe287
+              [TEXT] #1:321 layout=layout_177c5efc fills=fill_01b7a958 textStyle=style_14c88898 text="Quản trị hệ thống"
+    [FRAME] "Bottom User Section" #1:322 layout={"mode":"column","alignSelf":"stretch","padding":"16px","alignItems":"stretch","gap":"12px","sizing":{"horizontal":"fill","vertical":"hug"}} fills=fill_658ab2fa strokes=fill_c8fa25b1 strokeWeight="1px 0px 0px"
+      [FRAME] "Background+Border" #1:323 layout={"mode":"row","alignSelf":"stretch","padding":"10px","alignItems":"center","gap":"12px","sizing":{"horizontal":"fill","vertical":"hug"}} fills=fill_85065e9e strokes=fill_c8fa25b1 strokeWeight=1px borderRadius=8px
+        [FRAME] "Background" #1:324 layout={"mode":"row","padding":"7.5px 0px 8.5px","justifyContent":"center","alignItems":"center","sizing":{"horizontal":"fixed","vertical":"fixed"},"dimensions":{"width":36,"height":36}} fills=fill_01b7a958 borderRadius=9999px
+          [TEXT] #1:325 layout=layout_177c5efc fills=fill_658ab2fa textStyle={"fontFamily":"Inter","fontStyle":"Bold","fontWeight":700,"fontSize":14,"lineHeight":"20px","textAlignHorizontal":"CENTER","textAlignVertical":"CENTER"} text="A"
+        [FRAME] "Container" #1:326 layout={"mode":"column","alignItems":"stretch","sizing":{"horizontal":"fill","vertical":"hug"}}
+          [FRAME] "Container" #1:327 template=EL-e9077466
+            [TEXT] #1:328 layout=layout_56d3c81c fills=fill_77831e72 textStyle={"fontFamily":"Inter","fontStyle":"Semi Bold","fontWeight":600,"fontSize":14,"lineHeight":"17.5px","textAlignHorizontal":"LEFT","textAlignVertical":"CENTER"} text="Admin Flamingo"
+          [FRAME] "Margin" #1:329 layout={"mode":"column","alignSelf":"stretch","padding":"2px 0px 0px","alignItems":"stretch","sizing":{"horizontal":"fill","vertical":"hug"}}
+            [FRAME] "Container" #1:330 template=EL-e9077466
+              [TEXT] #1:331 layout=layout_56d3c81c fills=fill_ba795e8a textStyle={"fontFamily":"Inter","fontStyle":"Regular","fontWeight":400,"fontSize":12,"lineHeight":"15px","textAlignHorizontal":"LEFT","textAlignVertical":"CENTER"} text="admin@authportal.io"
+      [FRAME] "Button" #1:332 layout={"mode":"row","alignSelf":"stretch","padding":"8px 12px","justifyContent":"center","alignItems":"center","gap":"8px","sizing":{"horizontal":"fill","vertical":"hug"}} strokes=["#FECACA"] strokeWeight=1px borderRadius=8px
+        [FRAME] "Container" #1:333 template=EL-83bc679e
+          [IMAGE-SVG] "Icon" #1:334 layout={"mode":"none","sizing":{"horizontal":"fixed","vertical":"fixed"},"dimensions":{"width":13.5,"height":13.5}} fills=fill_4475c36f
+        [FRAME] "Container" #1:335 template=EL-83bc679e
+          [TEXT] #1:336 layout=layout_177c5efc fills=fill_4475c36f textStyle={"fontFamily":"Inter","fontStyle":"Semi Bold","fontWeight":600,"fontSize":12,"lineHeight":"16px","textAlignHorizontal":"CENTER","textAlignVertical":"CENTER"} text="Đăng xuất"
