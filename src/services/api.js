@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken } from '../utils/token';
+import { getToken, removeToken } from '../utils/token';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
@@ -23,10 +23,22 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor: xử lý 401 Unauthorized tự động nếu token hết hạn
+// Response interceptor: xử lý 401 Unauthorized tự động nếu token hết hạn / phiên bị thu hồi
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.response?.status === 401) {
+      const url = error.config?.url || '';
+      // Không can thiệp chuyển hướng nếu là thao tác đăng nhập/đăng ký sai thông tin
+      const isAuthAttempt = url.includes('/auth/login') || url.includes('/auth/register');
+
+      if (!isAuthAttempt) {
+        removeToken();
+        if (!window.location.pathname.includes('/login')) {
+          window.location.href = '/login?expired=true';
+        }
+      }
+    }
     return Promise.reject(error);
   }
 );

@@ -1,36 +1,54 @@
 const TOKEN_KEY = 'auth_portal_token';
 
+/**
+ * Lấy JWT token từ bộ nhớ (ưu tiên localStorage, fallback sang sessionStorage)
+ */
 export function getToken() {
   try {
-    return localStorage.getItem(TOKEN_KEY);
+    return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
   } catch (err) {
-    console.error('Không thể đọc token từ localStorage:', err);
+    console.error('Không thể đọc token từ storage:', err);
     return null;
   }
 }
 
-export function setToken(token) {
+/**
+ * Lưu JWT token vào bộ nhớ phù hợp theo lựa chọn "Ghi nhớ đăng nhập"
+ * @param {string|null} token 
+ * @param {boolean} remember - true: lưu vào localStorage (dài hạn), false: lưu vào sessionStorage (theo phiên tab)
+ */
+export function setToken(token, remember = true) {
   try {
     if (token) {
-      localStorage.setItem(TOKEN_KEY, token);
+      if (remember) {
+        localStorage.setItem(TOKEN_KEY, token);
+        sessionStorage.removeItem(TOKEN_KEY);
+      } else {
+        sessionStorage.setItem(TOKEN_KEY, token);
+        localStorage.removeItem(TOKEN_KEY);
+      }
     } else {
-      localStorage.removeItem(TOKEN_KEY);
+      removeToken();
     }
   } catch (err) {
-    console.error('Không thể lưu token vào localStorage:', err);
-  }
-}
-
-export function removeToken() {
-  try {
-    localStorage.removeItem(TOKEN_KEY);
-  } catch (err) {
-    console.error('Không thể xóa token khỏi localStorage:', err);
+    console.error('Không thể lưu token vào storage:', err);
   }
 }
 
 /**
- * Giải mã JWT payload ở Client (Base64URL decode chuẩn RFC 7519)
+ * Xóa sạch JWT token khỏi cả localStorage và sessionStorage
+ */
+export function removeToken() {
+  try {
+    localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
+  } catch (err) {
+    console.error('Không thể xóa token khỏi storage:', err);
+  }
+}
+
+/**
+ * Giải mã JWT payload ở Client (Base64URL decode chuẩn RFC 7519 kèm xử lý padding tự động)
  */
 export function decodeJwt(token) {
   if (!token || typeof token !== 'string') return null;
@@ -39,7 +57,11 @@ export function decodeJwt(token) {
     if (parts.length !== 3) return null;
 
     const base64Url = parts[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    // Bổ sung ký tự '=' để độ dài chia hết cho 4 theo chuẩn Base64 (BUG-MED-01)
+    const pad = (4 - (base64.length % 4)) % 4;
+    base64 += '='.repeat(pad);
+
     const jsonPayload = decodeURIComponent(
       atob(base64)
         .split('')

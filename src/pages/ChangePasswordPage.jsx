@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { changePassword } from '../services/authService';
@@ -38,30 +38,11 @@ export default function ChangePasswordPage() {
   // Password Strength & Match Evaluation
   const passwordStrength = evaluatePassword(formData.newPassword);
   const passwordMatch = checkPasswordMatch(formData.newPassword, formData.confirmPassword);
-
-  // Tính toán thời gian đổi mật khẩu gần nhất (nếu backend trả về)
-  const lastPasswordChangeText = useMemo(() => {
-    const rawDate = user?.passwordChangedAt || user?.password_changed_at;
-    if (rawDate) {
-      const date = new Date(rawDate);
-      if (!isNaN(date.getTime())) {
-        const diffMs = Date.now() - date.getTime();
-        const diffDays = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
-        const formatted = new Intl.DateTimeFormat('vi-VN', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false,
-        }).format(date);
-        return `${diffDays === 0 ? 'Hôm nay' : `${diffDays} ngày trước`} (${formatted} GMT+7)`;
-      }
-    }
-    // Mặc định chuẩn bản thiết kế Figma Node 1:337
-    return '14 ngày trước (28/10/2024 - 14:22:05 GMT+7)';
-  }, [user]);
+  const isSameAsCurrent = Boolean(
+    formData.currentPassword &&
+    formData.newPassword &&
+    formData.newPassword.trim() === formData.currentPassword.trim()
+  );
 
   // Handle Input Changes
   const handleChange = (e) => {
@@ -98,7 +79,7 @@ export default function ChangePasswordPage() {
       return;
     }
 
-    if (formData.newPassword === formData.currentPassword) {
+    if (formData.newPassword.trim() === formData.currentPassword.trim()) {
       setErrorMessage('Mật khẩu mới không được trùng với mật khẩu hiện tại');
       return;
     }
@@ -119,11 +100,12 @@ export default function ChangePasswordPage() {
         'Đổi mật khẩu thành công! Toàn bộ phiên cũ đã được thu hồi. Đang chuyển về trang đăng nhập sau 2 giây...'
       );
 
-      // Đợi 2s để người dùng đọc thông báo, sau đó tự động đăng xuất và điều hướng
+      // Đợi 2s để người dùng đọc thông báo, sau đó tự động đăng xuất và điều hướng (BUG-HIGH-01)
       setTimeout(async () => {
         await logout();
-        navigate('/login', {
-          state: { message: 'Mật khẩu đã thay đổi. Vui lòng đăng nhập lại.' },
+        navigate('/login?changed=true', {
+          state: { message: 'Đổi mật khẩu thành công. Vui lòng đăng nhập lại bằng mật khẩu mới.' },
+          replace: true,
         });
       }, 2000);
     } catch (err) {
@@ -219,9 +201,16 @@ export default function ChangePasswordPage() {
 
             {/* Field 2: Mật khẩu mới */}
             <div className="space-y-1.5">
-              <label className="block text-sm font-medium text-[#334155]">
-                MẬT KHẨU MỚI
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="block text-sm font-medium text-[#334155]">
+                  MẬT KHẨU MỚI
+                </label>
+                {isSameAsCurrent && (
+                  <span className="text-[11px] px-2 py-0.5 rounded-full font-medium border bg-amber-50 text-amber-700 border-amber-200">
+                    Trùng mật khẩu hiện tại
+                  </span>
+                )}
+              </div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                   <img src={lockIcon} alt="" className="w-4 h-4 opacity-50" />
@@ -233,7 +222,11 @@ export default function ChangePasswordPage() {
                   placeholder="Nhập mật khẩu mới (tối thiểu 8 ký tự)"
                   value={formData.newPassword}
                   onChange={handleChange}
-                  className="block w-full h-11 pl-10 pr-10 rounded-lg border border-[#CBD5E1] text-sm text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:ring-2 focus:ring-[#2563EB]/20 focus:border-[#2563EB] transition-colors"
+                  className={`block w-full h-11 pl-10 pr-10 rounded-lg border text-sm text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:ring-2 transition-colors ${
+                    isSameAsCurrent
+                      ? 'border-amber-400 focus:ring-amber-200 focus:border-amber-500'
+                      : 'border-[#CBD5E1] focus:ring-[#2563EB]/20 focus:border-[#2563EB]'
+                  }`}
                 />
                 <button
                   type="button"
@@ -257,15 +250,14 @@ export default function ChangePasswordPage() {
                     Độ mạnh mật khẩu:
                   </span>
                   <span
-                    className={`font-bold ${
-                      passwordStrength.level === 'weak'
+                    className={`font-bold ${passwordStrength.level === 'weak'
                         ? 'text-red-500'
                         : passwordStrength.level === 'medium'
-                        ? 'text-amber-500'
-                        : passwordStrength.level === 'strong'
-                        ? 'text-emerald-600'
-                        : 'text-[#64748B]'
-                    }`}
+                          ? 'text-amber-500'
+                          : passwordStrength.level === 'strong'
+                            ? 'text-emerald-600'
+                            : 'text-[#64748B]'
+                      }`}
                   >
                     {passwordStrength.label}
                   </span>
@@ -285,11 +277,10 @@ export default function ChangePasswordPage() {
                 <div className="pt-2 border-t border-[#E2E8F0] grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                   <div className="flex items-center gap-1.5">
                     <svg
-                      className={`w-3.5 h-3.5 shrink-0 ${
-                        passwordStrength.criteria.minLength
+                      className={`w-3.5 h-3.5 shrink-0 ${passwordStrength.criteria.minLength
                           ? 'text-[#10B981]'
                           : 'text-[#94A3B8]'
-                      }`}
+                        }`}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -310,11 +301,10 @@ export default function ChangePasswordPage() {
 
                   <div className="flex items-center gap-1.5">
                     <svg
-                      className={`w-3.5 h-3.5 shrink-0 ${
-                        passwordStrength.criteria.hasUpper
+                      className={`w-3.5 h-3.5 shrink-0 ${passwordStrength.criteria.hasUpper
                           ? 'text-[#10B981]'
                           : 'text-[#94A3B8]'
-                      }`}
+                        }`}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -335,11 +325,10 @@ export default function ChangePasswordPage() {
 
                   <div className="flex items-center gap-1.5">
                     <svg
-                      className={`w-3.5 h-3.5 shrink-0 ${
-                        passwordStrength.criteria.hasNumber
+                      className={`w-3.5 h-3.5 shrink-0 ${passwordStrength.criteria.hasNumber
                           ? 'text-[#10B981]'
                           : 'text-[#94A3B8]'
-                      }`}
+                        }`}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -360,11 +349,10 @@ export default function ChangePasswordPage() {
 
                   <div className="flex items-center gap-1.5">
                     <svg
-                      className={`w-3.5 h-3.5 shrink-0 ${
-                        passwordStrength.criteria.hasSpecial
+                      className={`w-3.5 h-3.5 shrink-0 ${passwordStrength.criteria.hasSpecial
                           ? 'text-[#10B981]'
                           : 'text-[#94A3B8]'
-                      }`}
+                        }`}
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -394,11 +382,10 @@ export default function ChangePasswordPage() {
                 </label>
                 {passwordMatch.checked && (
                   <span
-                    className={`text-[11px] px-2 py-0.5 rounded-full font-medium border ${
-                      passwordMatch.isMatch
+                    className={`text-[11px] px-2 py-0.5 rounded-full font-medium border ${passwordMatch.isMatch
                         ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                         : 'bg-red-50 text-red-700 border-red-200'
-                    }`}
+                      }`}
                   >
                     {passwordMatch.isMatch ? 'Khớp với mật khẩu mới' : 'Chưa trùng khớp'}
                   </span>
@@ -415,11 +402,10 @@ export default function ChangePasswordPage() {
                   placeholder="Nhập lại mật khẩu mới"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className={`block w-full h-11 pl-10 pr-10 rounded-lg border text-sm text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:ring-2 transition-colors ${
-                    passwordMatch.checked && !passwordMatch.isMatch
+                  className={`block w-full h-11 pl-10 pr-10 rounded-lg border text-sm text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:ring-2 transition-colors ${passwordMatch.checked && !passwordMatch.isMatch
                       ? 'border-red-400 focus:ring-red-200 focus:border-red-500'
                       : 'border-[#CBD5E1] focus:ring-[#2563EB]/20 focus:border-[#2563EB]'
-                  }`}
+                    }`}
                 />
                 <button
                   type="button"
@@ -521,17 +507,6 @@ export default function ChangePasswordPage() {
               </p>
             </div>
 
-          </div>
-
-          {/* Footer note */}
-          <div className="border-t border-[#E2E8F0] pt-4 flex items-center gap-2 text-xs text-[#64748B]">
-            <span className="w-2 h-2 rounded-full bg-[#10B981] shrink-0" />
-            <span>
-              Lần đổi mật khẩu gần nhất:{' '}
-              <strong className="font-medium text-[#334155]">
-                {lastPasswordChangeText}
-              </strong>
-            </span>
           </div>
         </div>
 

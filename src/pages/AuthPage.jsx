@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { evaluatePassword, checkPasswordMatch } from '../utils/passwordValidator';
 import Button from '../components/common/Button';
@@ -14,6 +14,7 @@ import eyeOffIcon from '../assets/icons/eye-off.svg';
 
 export default function AuthPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, register } = useAuth();
 
   // Tab State: 'login' | 'register'
@@ -50,6 +51,20 @@ export default function AuthPage() {
     registerForm.confirmPassword
   );
 
+  // Kiểm tra query param expired (BUG-CRIT-01) hoặc state message (BUG-HIGH-01)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('expired') === 'true') {
+      setErrorMessage('Phiên đăng nhập đã hết hạn hoặc mật khẩu đã thay đổi. Vui lòng đăng nhập lại.');
+    } else if (params.get('changed') === 'true') {
+      setSuccessMessage('Đổi mật khẩu thành công. Vui lòng đăng nhập lại bằng mật khẩu mới.');
+    }
+
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+    }
+  }, [location.state]);
+
   // Switch tabs
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -70,7 +85,7 @@ export default function AuthPage() {
 
     try {
       setLoading(true);
-      await login(loginForm.email, loginForm.password);
+      await login(loginForm.email, loginForm.password, loginForm.rememberMe);
       navigate('/dashboard');
     } catch (err) {
       const status = err.response?.status;
