@@ -1,5 +1,4 @@
 import menuIcon from '../../assets/icons/menu.svg';
-import userIcon from '../../assets/icons/user.svg';
 
 export default function Topbar({
   title = 'Tổng quan tài khoản',
@@ -50,8 +49,8 @@ export default function Topbar({
           <span className="text-sm font-semibold text-slate-800 hidden md:inline truncate max-w-[120px]">
             {user?.name || 'Người dùng'}
           </span>
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white shrink-0 shadow-sm">
-            <img src={userIcon} alt="" className="w-3.5 h-3.5 brightness-0 invert" />
+          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white shrink-0 shadow-sm font-bold text-xs select-none">
+            {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
           </div>
         </div>
       </div>

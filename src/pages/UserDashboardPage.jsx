@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { checkHealth } from '../services/api';
 import { decodeJwt } from '../utils/token';
-import { formatShortDate } from '../utils/formatDate';
+import { formatShortDate, getUserJoinDate } from '../utils/formatDate';
 import AppLayout from '../components/layout/AppLayout';
 
 // Icons from assets
@@ -24,6 +24,7 @@ export default function UserDashboardPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [copiedId, setCopiedId] = useState(false);
   const [copiedJson, setCopiedJson] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   // Decoded Claims from current JWT
   const [jwtClaims, setJwtClaims] = useState(null);
@@ -52,7 +53,15 @@ export default function UserDashboardPage() {
   const handleRefreshData = async () => {
     try {
       setRefreshing(true);
-      await Promise.all([refreshUser(), loadHealth()]);
+      await Promise.allSettled([
+        refreshUser ? refreshUser() : Promise.resolve(),
+        loadHealth(),
+      ]);
+      if (token) {
+        setJwtClaims(decodeJwt(token));
+      }
+      setToastMessage('Đã làm mới dữ liệu phiên làm việc');
+      setTimeout(() => setToastMessage(''), 2500);
     } finally {
       setTimeout(() => setRefreshing(false), 500);
     }
@@ -120,7 +129,7 @@ export default function UserDashboardPage() {
 
           <div className="flex flex-col items-start md:items-end gap-2 shrink-0">
             {/* Endpoint Tag */}
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono bg-white/15 text-white select-none">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono bg-white/15 text-white select-none">
               <span className="font-bold text-[#BFDBFE]">[GET]</span>
               <span>/api/auth/me</span>
             </div>
@@ -130,7 +139,7 @@ export default function UserDashboardPage() {
               type="button"
               onClick={handleRefreshData}
               disabled={refreshing}
-              className="inline-flex items-center gap-2 px-3.5 py-2 bg-white text-[#2563EB] hover:bg-blue-50 font-medium text-xs rounded-lg shadow-sm transition-colors cursor-pointer disabled:opacity-75"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-white text-[#2563EB] hover:bg-blue-50 font-medium text-sm rounded-lg shadow-sm transition-colors cursor-pointer disabled:opacity-75"
             >
               <img
                 src={spinIcon}
@@ -231,10 +240,16 @@ export default function UserDashboardPage() {
                 <button
                   type="button"
                   onClick={handleCopyId}
-                  className="p-1 rounded text-[#64748B] hover:text-[#0F172A] hover:bg-slate-200 transition-colors cursor-pointer"
-                  title="Sao chép User ID"
+                  className="inline-flex items-center gap-1.5 px-2 py-1 rounded text-xs text-[#64748B] hover:text-[#0F172A] hover:bg-slate-200 transition-colors cursor-pointer"
+                  title={copiedId ? 'Đã sao chép!' : 'Sao chép User ID'}
                 >
-                  <img src={copyIcon} alt="" className="w-3.5 h-3.5 opacity-70" />
+                  {copiedId ? (
+                    <>
+                      <span className="text-[11px] font-medium text-[#64748B]">Đã sao chép!</span>
+                    </>
+                  ) : (
+                    <img src={copyIcon} alt="" className="w-3.5 h-3.5 opacity-70" />
+                  )}
                 </button>
               </div>
             </div>
@@ -275,7 +290,7 @@ export default function UserDashboardPage() {
               <div className="flex items-center gap-2 min-w-0">
                 <img src={calendarIcon} alt="" className="w-3.5 h-3.5 shrink-0" />
                 <span className="text-sm font-medium text-[#1E293B] truncate">
-                  {formatShortDate(user?.createdAt) || '12/01/2024'}
+                  {getUserJoinDate(user, jwtClaims)}
                 </span>
               </div>
             </div>
@@ -369,6 +384,14 @@ export default function UserDashboardPage() {
         </div>
 
       </div>
+
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-[#0F172A] text-white px-4 py-2.5 rounded-lg shadow-lg text-sm flex items-center gap-2 animate-bounce">
+          <span className="w-2 h-2 rounded-full bg-[#10B981]" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
     </AppLayout>
   );
 }
