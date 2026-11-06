@@ -37,7 +37,7 @@ export function formatShortDate(dateString) {
       month: '2-digit',
       year: 'numeric',
     }).format(date);
-  } catch (err) {
+  } catch {
     return String(dateString);
   }
 }

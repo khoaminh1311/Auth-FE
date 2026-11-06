@@ -1,9 +1,8 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { checkHealth } from '../services/api';
 import { decodeJwt } from '../utils/token';
-import { formatShortDate, getUserJoinDate } from '../utils/formatDate';
+import { getUserJoinDate } from '../utils/formatDate';
 import AppLayout from '../components/layout/AppLayout';
 
 // Icons from assets
@@ -20,7 +19,6 @@ import calendarIcon from '../assets/icons/calendar.svg';
 export default function UserDashboardPage() {
   const { user, token, logout, refreshUser } = useAuth();
 
-  const [apiHealth, setApiHealth] = useState({ status: 'loading', uptime: null });
   const [refreshing, setRefreshing] = useState(false);
   const [copiedId, setCopiedId] = useState(false);
   const [copiedJson, setCopiedJson] = useState(false);
@@ -29,34 +27,21 @@ export default function UserDashboardPage() {
   // Decoded Claims from current JWT
   const [jwtClaims, setJwtClaims] = useState(null);
 
-  // Load API Health
-  const loadHealth = useCallback(async () => {
-    try {
-      const data = await checkHealth();
-      setApiHealth({ status: data?.status === 'ok' ? 'ready' : 'unknown', uptime: data?.uptime });
-    } catch (err) {
-      console.warn('Lỗi kiểm tra health check:', err);
-      setApiHealth({ status: 'error', uptime: null });
-    }
-  }, []);
-
-  // Update JWT Claims
+  // Update JWT Claims khi token thay đổi
   useEffect(() => {
-    loadHealth();
     if (token) {
       const decoded = decodeJwt(token);
       setJwtClaims(decoded);
     }
-  }, [token, loadHealth]);
+  }, [token]);
 
   // Handle Refresh Data
   const handleRefreshData = async () => {
     try {
       setRefreshing(true);
-      await Promise.allSettled([
-        refreshUser ? refreshUser() : Promise.resolve(),
-        loadHealth(),
-      ]);
+      if (refreshUser) {
+        await refreshUser();
+      }
       if (token) {
         setJwtClaims(decodeJwt(token));
       }
@@ -67,34 +52,82 @@ export default function UserDashboardPage() {
     }
   };
 
+  // Helper sao chép clipboard an toàn kèm fallback cho môi trường HTTP/iframe (BUG-MED-02)
+  const copyToClipboard = async (text) => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+      // Fallback cho trình duyệt cũ hoặc môi trường không phải HTTPS
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.left = '-999999px';
+      textarea.style.top = '-999999px';
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textarea);
+      return successful;
+    } catch (err) {
+      console.warn('Không thể sao chép văn bản vào clipboard:', err);
+      return false;
+    }
+  };
+
   // Copy User ID
-  const handleCopyId = () => {
+  const handleCopyId = async () => {
     const idToCopy = user?.id || user?._id || 'usr_94b8102aef7c';
-    navigator.clipboard.writeText(idToCopy);
-    setCopiedId(true);
-    setTimeout(() => setCopiedId(false), 1500);
+    const ok = await copyToClipboard(idToCopy);
+    if (ok) {
+      setCopiedId(true);
+      setTimeout(() => setCopiedId(false), 1500);
+    }
   };
 
   // Copy JSON Claims
-  const handleCopyJson = () => {
+  const handleCopyJson = async () => {
     if (!jwtClaims) return;
-    navigator.clipboard.writeText(JSON.stringify(jwtClaims, null, 2));
-    setCopiedJson(true);
-    setTimeout(() => setCopiedJson(false), 1500);
+    const ok = await copyToClipboard(JSON.stringify(jwtClaims, null, 2));
+    if (ok) {
+      setCopiedJson(true);
+      setTimeout(() => setCopiedJson(false), 1500);
+    }
   };
 
-  // Calculate remaining session time dynamically
-  const sessionRemainingText = useMemo(() => {
+  // Calculate remaining session time dynamically and update periodically (BUG-HIGH-02)
+  const [sessionRemainingText, setSessionRemainingText] = useState(() => {
     if (!jwtClaims?.exp) return 'Còn 23 giờ 45 phút';
     const remainingMs = jwtClaims.exp * 1000 - Date.now();
     if (remainingMs <= 0) return 'Đã hết hạn';
     const hours = Math.floor(remainingMs / (1000 * 60 * 60));
     const minutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
-    if (hours > 0) {
-      return `Còn ${hours} giờ ${minutes} phút`;
-    }
-    return `Còn ${minutes} phút`;
-  }, [jwtClaims]);
+    return hours > 0 ? `Còn ${hours} giờ ${minutes} phút` : `Còn ${minutes} phút`;
+  });
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      if (!jwtClaims?.exp) {
+        setSessionRemainingText('Còn 23 giờ 45 phút');
+        return;
+      }
+      const remainingMs = jwtClaims.exp * 1000 - Date.now();
+      if (remainingMs <= 0) {
+        setSessionRemainingText('Đã hết hạn');
+        return;
+      }
+      const hours = Math.floor(remainingMs / (1000 * 60 * 60));
+      const minutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+      setSessionRemainingText(hours > 0 ? `Còn ${hours} giờ ${minutes} phút` : `Còn ${minutes} phút`);
+    };
+
+    updateCountdown();
+    // Update every 30 seconds so time remaining stays accurate in real-time
+    const timerId = setInterval(updateCountdown, 30000);
+    return () => clearInterval(timerId);
+  }, [jwtClaims?.exp]);
 
   const userId = user?.id || user?._id || 'usr_94b8102aef7c';
   const userRole = user?.role === 'admin' ? 'QUẢN TRỊ VIÊN' : 'THÀNH VIÊN';

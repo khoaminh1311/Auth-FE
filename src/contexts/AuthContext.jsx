@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { getToken, setToken, removeToken } from '../utils/token';
+import { getToken, setToken, removeToken, decodeJwt } from '../utils/token';
 import {
   loginUser,
   registerUser,
@@ -28,10 +28,21 @@ export function AuthProvider({ children }) {
       setUser(data.user);
       setTokenState(currentToken);
     } catch (err) {
-      console.warn('Token không hợp lệ hoặc đã hết hạn, tự động thu hồi phiên:', err);
-      removeToken();
-      setTokenState(null);
-      setUser(null);
+      const status = err.response?.status;
+      if (status === 401 || status === 403) {
+        console.warn('Token không hợp lệ hoặc đã hết hạn, tự động thu hồi phiên:', err);
+        removeToken();
+        setTokenState(null);
+        setUser(null);
+      } else {
+        // Lỗi mạng hoặc máy chủ không phản hồi: bảo toàn token, không xóa phiên
+        console.warn('Không thể kết nối đến máy chủ để xác thực token:', err.message);
+        setTokenState(currentToken);
+        const decoded = decodeJwt(currentToken);
+        if (decoded?.id) {
+          setUser((prev) => prev || { id: decoded.id, role: 'user' });
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -41,11 +52,11 @@ export function AuthProvider({ children }) {
     initializeAuth();
   }, [initializeAuth]);
 
-  // Hành động Đăng nhập
-  const login = async (email, password) => {
+  // Hành động Đăng nhập (hỗ trợ rememberMe: true -> localStorage, false -> sessionStorage)
+  const login = async (email, password, rememberMe = true) => {
     const data = await loginUser({ email, password });
     if (data.token) {
-      setToken(data.token);
+      setToken(data.token, rememberMe);
       setTokenState(data.token);
       setUser(data.user);
     }
@@ -78,6 +89,12 @@ export function AuthProvider({ children }) {
       return data.user;
     } catch (err) {
       console.error('Không thể làm mới profile:', err);
+      const status = err.response?.status;
+      if (status === 401 || status === 403) {
+        removeToken();
+        setTokenState(null);
+        setUser(null);
+      }
       return null;
     }
   };
