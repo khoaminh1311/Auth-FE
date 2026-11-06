@@ -128,7 +128,7 @@ export default function AdminDashboardPage() {
 
           <div className="flex flex-col items-start md:items-end gap-2 shrink-0">
             {/* Endpoint Tag */}
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-mono bg-white/15 text-white select-none">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono bg-white/15 text-white select-none">
               <span className="font-bold text-[#BFDBFE]">[GET]</span>
               <span>/api/auth/me</span>
             </div>

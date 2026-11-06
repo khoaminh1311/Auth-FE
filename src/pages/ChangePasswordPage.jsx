@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { changePassword } from '../services/authService';
@@ -38,6 +38,30 @@ export default function ChangePasswordPage() {
   // Password Strength & Match Evaluation
   const passwordStrength = evaluatePassword(formData.newPassword);
   const passwordMatch = checkPasswordMatch(formData.newPassword, formData.confirmPassword);
+
+  // Tính toán thời gian đổi mật khẩu gần nhất (nếu backend trả về)
+  const lastPasswordChangeText = useMemo(() => {
+    const rawDate = user?.passwordChangedAt || user?.password_changed_at;
+    if (rawDate) {
+      const date = new Date(rawDate);
+      if (!isNaN(date.getTime())) {
+        const diffMs = Date.now() - date.getTime();
+        const diffDays = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+        const formatted = new Intl.DateTimeFormat('vi-VN', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false,
+        }).format(date);
+        return `${diffDays === 0 ? 'Hôm nay' : `${diffDays} ngày trước`} (${formatted} GMT+7)`;
+      }
+    }
+    // Mặc định chuẩn bản thiết kế Figma Node 1:337
+    return '14 ngày trước (28/10/2024 - 14:22:05 GMT+7)';
+  }, [user]);
 
   // Handle Input Changes
   const handleChange = (e) => {
@@ -505,7 +529,7 @@ export default function ChangePasswordPage() {
             <span>
               Lần đổi mật khẩu gần nhất:{' '}
               <strong className="font-medium text-[#334155]">
-                14 ngày trước (28/10/2024 - 14:22:05 GMT+7)
+                {lastPasswordChangeText}
               </strong>
             </span>
           </div>
