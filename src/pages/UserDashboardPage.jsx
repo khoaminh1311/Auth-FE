@@ -7,11 +7,9 @@ import { formatShortDate } from '../utils/formatDate';
 import AppLayout from '../components/layout/AppLayout';
 
 // Icons from assets
-import refreshIcon from '../assets/icons/refresh.svg';
 import copyIcon from '../assets/icons/copy.svg';
 import emailIcon from '../assets/icons/email.svg';
 import codeIcon from '../assets/icons/code.svg';
-import lockIcon from '../assets/icons/lock.svg';
 import clockIcon from '../assets/icons/clock.svg';
 import fingerprintIcon from '../assets/icons/fingerprint.svg';
 import shieldGreenIcon from '../assets/icons/shield-green.svg';
@@ -135,7 +133,7 @@ export default function UserDashboardPage() {
               className="inline-flex items-center gap-2 px-3.5 py-2 bg-white text-[#2563EB] hover:bg-blue-50 font-medium text-xs rounded-lg shadow-sm transition-colors cursor-pointer disabled:opacity-75"
             >
               <img
-                src={refreshIcon}
+                src={spinIcon}
                 alt=""
                 className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`}
               />
