@@ -9,7 +9,7 @@ import adminInactiveIcon from '../../assets/icons/admin-inactive.svg';
 import logoutIcon from '../../assets/icons/logout.svg';
 
 export default function Sidebar({
-  user = { name: 'Flamingo', email: 'flamingo@authportal.io', role: 'user' },
+  user = { name: 'Người dùng', email: '—', role: 'user' },
   onOpenLogout,
   onItemClick,
 }) {

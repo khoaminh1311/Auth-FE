@@ -8,7 +8,7 @@ export default function AppLayout({
   children,
   title = 'Tổng quan tài khoản',
   subtitle = 'CỔNG XÁC THỰC BẢO MẬT',
-  user = { name: 'Flamingo', email: 'flamingo@authportal.io', role: 'user' },
+  user = { name: 'Người dùng', email: '—', role: 'user' },
   onLogoutConfirm = () => {},
   loadingLogout = false,
 }) {

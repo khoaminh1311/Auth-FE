@@ -104,7 +104,8 @@ export default function UserDashboardPage() {
 
   // Copy User ID
   const handleCopyId = async () => {
-    const idToCopy = user?.id || user?._id || 'usr_94b8102aef7c';
+    const idToCopy = user?.id || user?._id || '';
+    if (!idToCopy) return;
     const ok = await copyToClipboard(idToCopy);
     if (ok && mountedRef.current) {
       setCopiedId(true);
@@ -122,30 +123,24 @@ export default function UserDashboardPage() {
     }
   };
 
-  // Calculate remaining session time dynamically and update periodically (BUG-HIGH-02)
-  const [sessionRemainingText, setSessionRemainingText] = useState(() => {
-    if (!jwtClaims?.exp) return 'Còn 23 giờ 45 phút';
-    const remainingMs = jwtClaims.exp * 1000 - Date.now();
+  // Calculate remaining session time dynamically and update periodically (BUG-HIGH-02, NEW-UX-01)
+  const calculateRemainingText = (exp) => {
+    if (!exp) return 'Đang cập nhật...';
+    const remainingMs = exp * 1000 - Date.now();
     if (remainingMs <= 0) return 'Đã hết hạn';
     const hours = Math.floor(remainingMs / (1000 * 60 * 60));
     const minutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
     return hours > 0 ? `Còn ${hours} giờ ${minutes} phút` : `Còn ${minutes} phút`;
+  };
+
+  const [sessionRemainingText, setSessionRemainingText] = useState(() => {
+    const initialClaims = token ? decodeJwt(token) : null;
+    return calculateRemainingText(initialClaims?.exp);
   });
 
   useEffect(() => {
     const updateCountdown = () => {
-      if (!jwtClaims?.exp) {
-        setSessionRemainingText('Còn 23 giờ 45 phút');
-        return;
-      }
-      const remainingMs = jwtClaims.exp * 1000 - Date.now();
-      if (remainingMs <= 0) {
-        setSessionRemainingText('Đã hết hạn');
-        return;
-      }
-      const hours = Math.floor(remainingMs / (1000 * 60 * 60));
-      const minutes = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
-      setSessionRemainingText(hours > 0 ? `Còn ${hours} giờ ${minutes} phút` : `Còn ${minutes} phút`);
+      setSessionRemainingText(calculateRemainingText(jwtClaims?.exp));
     };
 
     updateCountdown();
@@ -154,7 +149,7 @@ export default function UserDashboardPage() {
     return () => clearInterval(timerId);
   }, [jwtClaims?.exp]);
 
-  const userId = user?.id || user?._id || 'usr_94b8102aef7c';
+  const userId = user?.id || user?._id || '—';
   const userRole = user?.role === 'admin' ? 'QUẢN TRỊ VIÊN' : 'THÀNH VIÊN';
   const roleDescription =
     user?.role === 'admin'
@@ -176,7 +171,7 @@ export default function UserDashboardPage() {
         <div className="bg-[#2563EB] text-white rounded-xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
             <h2 className="text-2xl font-bold tracking-tight">
-              Xin chào, {user?.name || 'Flamingo'}!
+              Xin chào, {user?.name || 'Người dùng'}!
             </h2>
             <p className="text-sm text-[#DBEAFE] max-w-2xl leading-relaxed">
               Chào mừng bạn quay lại không gian làm việc an toàn của Auth Portal. Giám sát phiên đăng nhập và
@@ -320,7 +315,7 @@ export default function UserDashboardPage() {
               <div className="flex items-center gap-2 min-w-0">
                 <img src={emailIcon} alt="" className="w-3.5 h-3.5 opacity-70 shrink-0" />
                 <span className="text-sm font-medium text-[#1E293B] truncate">
-                  {user?.email || 'flamingo@authportal.io'}
+                  {user?.email || '—'}
                 </span>
               </div>
             </div>

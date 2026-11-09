@@ -3,7 +3,7 @@ import menuIcon from '../../assets/icons/menu.svg';
 export default function Topbar({
   title = 'Tổng quan tài khoản',
   subtitle = 'CỔNG XÁC THỰC BẢO MẬT',
-  user = { name: 'Flamingo', role: 'user' },
+  user = { name: 'Người dùng', role: 'user' },
   onOpenMobileMenu,
 }) {
   const isAdmin = user?.role === 'admin';
