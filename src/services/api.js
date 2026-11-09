@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { getToken, removeToken } from '../utils/token';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api').replace(/\/$/, '');
 
 // Khởi tạo instance Axios dùng chung
 export const apiClient = axios.create({
@@ -11,7 +11,7 @@ export const apiClient = axios.create({
   },
 });
 
-// Request interceptor: Tự động đính kèm Bearer token từ localStorage (nếu có)
+// Request interceptor: Tự động đính kèm Bearer token từ bộ nhớ trình duyệt (localStorage hoặc sessionStorage)
 apiClient.interceptors.request.use(
   (config) => {
     const token = getToken();
@@ -35,7 +35,8 @@ apiClient.interceptors.response.use(
       if (!isAuthAttempt) {
         removeToken();
         if (!window.location.pathname.includes('/login')) {
-          window.location.href = '/login?expired=true';
+          const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+          window.location.href = `${basePath}/login?expired=true`;
         }
       }
     }
