@@ -14,10 +14,18 @@ export default function AppLayout({
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [logoutModalOpen, setLogoutModalOpen] = useState(false);
+  const [isSubmittingLogout, setIsSubmittingLogout] = useState(false);
 
+  // Xử lý xác nhận đăng xuất: chặn bấm liên tục và bật trạng thái loading (Issue #14)
   const handleLogout = async () => {
-    await onLogoutConfirm();
-    setLogoutModalOpen(false);
+    if (isSubmittingLogout) return;
+    try {
+      setIsSubmittingLogout(true);
+      await onLogoutConfirm();
+    } finally {
+      setIsSubmittingLogout(false);
+      setLogoutModalOpen(false);
+    }
   };
 
   return (
@@ -57,9 +65,9 @@ export default function AppLayout({
       {/* Standard Logout Confirmation Dialog (#logout-modal) */}
       <LogoutModal
         isOpen={logoutModalOpen}
-        onClose={() => setLogoutModalOpen(false)}
+        onClose={() => (isSubmittingLogout ? undefined : setLogoutModalOpen(false))}
         onConfirm={handleLogout}
-        loading={loadingLogout}
+        loading={loadingLogout || isSubmittingLogout}
       />
 
     </div>
