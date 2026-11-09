@@ -3,6 +3,13 @@ import { getToken, removeToken } from '../utils/token';
 
 const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:3000/api').replace(/\/$/, '');
 
+// Quản lý getter cung cấp token hiện hành từ React context (đảm bảo request luôn đồng bộ với tab context)
+let activeTokenGetter = null;
+
+export function setTokenProvider(getter) {
+  activeTokenGetter = getter;
+}
+
 // Khởi tạo instance Axios dùng chung
 export const apiClient = axios.create({
   baseURL: API_URL,
@@ -11,10 +18,10 @@ export const apiClient = axios.create({
   },
 });
 
-// Request interceptor: Tự động đính kèm Bearer token từ bộ nhớ trình duyệt (localStorage hoặc sessionStorage)
+// Request interceptor: Tự động đính kèm Bearer token từ provider của context hoặc storage
 apiClient.interceptors.request.use(
   (config) => {
-    const token = getToken();
+    const token = (typeof activeTokenGetter === 'function' ? activeTokenGetter() : null) || getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

@@ -1,14 +1,30 @@
-const TOKEN_KEY = 'auth_portal_token';
+export const TOKEN_KEY = 'auth_portal_token';
 
 /**
- * Lấy JWT token từ bộ nhớ (ưu tiên localStorage, fallback sang sessionStorage)
+ * Lấy JWT token từ bộ nhớ:
+ * Ưu tiên phiên riêng biệt của tab (sessionStorage) trước phiên dùng chung (localStorage).
  */
 export function getToken() {
   try {
-    return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
+    const sessionToken = sessionStorage.getItem(TOKEN_KEY);
+    if (sessionToken) {
+      return sessionToken;
+    }
+    return localStorage.getItem(TOKEN_KEY);
   } catch (err) {
     console.error('Không thể đọc token từ storage:', err);
     return null;
+  }
+}
+
+/**
+ * Kiểm tra xem tab hiện tại có đang sử dụng phiên riêng biệt trong sessionStorage hay không
+ */
+export function hasSessionToken() {
+  try {
+    return Boolean(sessionStorage.getItem(TOKEN_KEY));
+  } catch {
+    return false;
   }
 }
 
@@ -25,7 +41,6 @@ export function setToken(token, remember = true) {
         sessionStorage.removeItem(TOKEN_KEY);
       } else {
         sessionStorage.setItem(TOKEN_KEY, token);
-        localStorage.removeItem(TOKEN_KEY);
       }
     } else {
       removeToken();
