@@ -68,7 +68,7 @@ export function getDateFromObjectId(id) {
  * 1. Ưu tiên user.createdAt (nếu backend trả về)
  * 2. Trích xuất thời điểm tạo thật từ MongoDB ObjectId (user.id / user._id)
  * 3. Fallback theo JWT iat timestamp
- * 4. Fallback ngày mẫu Figma (12/01/2024)
+ * 4. Fallback khi không có dữ liệu tạo tài khoản
  */
 export function getUserJoinDate(user, jwtClaims) {
   if (user?.createdAt) {
@@ -88,5 +88,5 @@ export function getUserJoinDate(user, jwtClaims) {
     return formatShortDate(new Date(jwtClaims.iat * 1000));
   }
 
-  return '12/01/2024';
+  return 'Chưa cập nhật';
 }

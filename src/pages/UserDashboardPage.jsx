@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { decodeJwt } from '../utils/token';
@@ -27,6 +27,29 @@ export default function UserDashboardPage() {
   // Decoded Claims from current JWT
   const [jwtClaims, setJwtClaims] = useState(null);
 
+  // Mounted tracking & timer management (NEW-AUTH-07)
+  const mountedRef = useRef(true);
+  const timeoutsRef = useRef([]);
+
+  const safeSetTimeout = (callback, delay) => {
+    const id = setTimeout(() => {
+      if (mountedRef.current) {
+        callback();
+      }
+    }, delay);
+    timeoutsRef.current.push(id);
+    return id;
+  };
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      timeoutsRef.current.forEach(clearTimeout);
+      timeoutsRef.current = [];
+    };
+  }, []);
+
   // Update JWT Claims khi token thay đổi
   useEffect(() => {
     if (token) {
@@ -42,13 +65,15 @@ export default function UserDashboardPage() {
       if (refreshUser) {
         await refreshUser();
       }
-      if (token) {
+      if (token && mountedRef.current) {
         setJwtClaims(decodeJwt(token));
       }
-      setToastMessage('Đã làm mới dữ liệu phiên làm việc');
-      setTimeout(() => setToastMessage(''), 2500);
+      if (mountedRef.current) {
+        setToastMessage('Đã làm mới dữ liệu phiên làm việc');
+        safeSetTimeout(() => setToastMessage(''), 2500);
+      }
     } finally {
-      setTimeout(() => setRefreshing(false), 500);
+      safeSetTimeout(() => setRefreshing(false), 500);
     }
   };
 
@@ -81,9 +106,9 @@ export default function UserDashboardPage() {
   const handleCopyId = async () => {
     const idToCopy = user?.id || user?._id || 'usr_94b8102aef7c';
     const ok = await copyToClipboard(idToCopy);
-    if (ok) {
+    if (ok && mountedRef.current) {
       setCopiedId(true);
-      setTimeout(() => setCopiedId(false), 1500);
+      safeSetTimeout(() => setCopiedId(false), 1500);
     }
   };
 
@@ -91,9 +116,9 @@ export default function UserDashboardPage() {
   const handleCopyJson = async () => {
     if (!jwtClaims) return;
     const ok = await copyToClipboard(JSON.stringify(jwtClaims, null, 2));
-    if (ok) {
+    if (ok && mountedRef.current) {
       setCopiedJson(true);
-      setTimeout(() => setCopiedJson(false), 1500);
+      safeSetTimeout(() => setCopiedJson(false), 1500);
     }
   };
 

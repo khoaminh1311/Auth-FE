@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { changePassword } from '../services/authService';
@@ -34,6 +34,20 @@ export default function ChangePasswordPage() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+
+  // Theo dõi trạng thái mount & cleanup timeout khi unmount (NEW-AUTH-07)
+  const mountedRef = useRef(true);
+  const redirectTimerRef = useRef(null);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      if (redirectTimerRef.current) {
+        clearTimeout(redirectTimerRef.current);
+      }
+    };
+  }, []);
 
   // Password Strength & Match Evaluation
   const passwordStrength = evaluatePassword(formData.newPassword);
@@ -100,21 +114,27 @@ export default function ChangePasswordPage() {
         'Đổi mật khẩu thành công! Toàn bộ phiên cũ đã được thu hồi. Đang chuyển về trang đăng nhập sau 2 giây...'
       );
 
-      // Đợi 2s để người dùng đọc thông báo, sau đó tự động đăng xuất và điều hướng (BUG-HIGH-01)
-      setTimeout(async () => {
+      // Đợi 2s để người dùng đọc thông báo, sau đó tự động đăng xuất và điều hướng (BUG-HIGH-01, NEW-AUTH-07)
+      redirectTimerRef.current = setTimeout(async () => {
         await logout();
-        navigate('/login?changed=true', {
-          state: { message: 'Đổi mật khẩu thành công. Vui lòng đăng nhập lại bằng mật khẩu mới.' },
-          replace: true,
-        });
+        if (mountedRef.current) {
+          navigate('/login?changed=true', {
+            state: { message: 'Đổi mật khẩu thành công. Vui lòng đăng nhập lại bằng mật khẩu mới.' },
+            replace: true,
+          });
+        }
       }, 2000);
     } catch (err) {
-      const msg =
-        err.response?.data?.message ||
-        'Không thể cập nhật mật khẩu. Vui lòng kiểm tra lại mật khẩu hiện tại.';
-      setErrorMessage(msg);
+      if (mountedRef.current) {
+        const msg =
+          err.response?.data?.message ||
+          'Không thể cập nhật mật khẩu. Vui lòng kiểm tra lại mật khẩu hiện tại.';
+        setErrorMessage(msg);
+      }
     } finally {
-      setLoading(false);
+      if (mountedRef.current) {
+        setLoading(false);
+      }
     }
   };
 
@@ -136,14 +156,22 @@ export default function ChangePasswordPage() {
 
         {/* Feedback Alert: Success */}
         {successMessage && (
-          <div className="p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium animate-in fade-in duration-200">
+          <div
+            role="status"
+            aria-live="polite"
+            className="p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium animate-in fade-in duration-200"
+          >
             {successMessage}
           </div>
         )}
 
         {/* Feedback Alert: Error */}
         {errorMessage && (
-          <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm font-medium animate-in fade-in duration-200">
+          <div
+            role="alert"
+            aria-live="assertive"
+            className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm font-medium animate-in fade-in duration-200"
+          >
             {errorMessage}
           </div>
         )}
@@ -189,6 +217,7 @@ export default function ChangePasswordPage() {
                   onClick={() => setShowCurrent((prev) => !prev)}
                   className="absolute inset-y-0 right-0 pr-3.5 flex items-center cursor-pointer"
                   title={showCurrent ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                  aria-label={showCurrent ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                 >
                   <img
                     src={showCurrent ? eyeIcon : eyeOffIcon}
@@ -234,6 +263,7 @@ export default function ChangePasswordPage() {
                   onClick={() => setShowNew((prev) => !prev)}
                   className="absolute inset-y-0 right-0 pr-3.5 flex items-center cursor-pointer"
                   title={showNew ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                  aria-label={showNew ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                 >
                   <img
                     src={showNew ? eyeIcon : eyeOffIcon}
@@ -413,6 +443,7 @@ export default function ChangePasswordPage() {
                   onClick={() => setShowConfirm((prev) => !prev)}
                   className="absolute inset-y-0 right-0 pr-3.5 flex items-center cursor-pointer"
                   title={showConfirm ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                  aria-label={showConfirm ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                 >
                   <img
                     src={showConfirm ? eyeIcon : eyeOffIcon}

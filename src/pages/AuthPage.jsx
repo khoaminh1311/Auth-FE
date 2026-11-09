@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { evaluatePassword, checkPasswordMatch } from '../utils/passwordValidator';
@@ -44,6 +44,20 @@ export default function AuthPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Quản lý timer chuyển tab sau đăng ký (NEW-AUTH-07)
+  const tabTimerRef = useRef(null);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      if (tabTimerRef.current) {
+        clearTimeout(tabTimerRef.current);
+      }
+    };
+  }, []);
+
   // Password strength & matching evaluation
   const passwordStrength = evaluatePassword(registerForm.password);
   const passwordMatch = checkPasswordMatch(
@@ -88,18 +102,22 @@ export default function AuthPage() {
       await login(loginForm.email, loginForm.password, loginForm.rememberMe);
       navigate('/dashboard');
     } catch (err) {
-      const status = err.response?.status;
-      if (status === 401) {
-        setErrorMessage('Email hoặc mật khẩu không chính xác. Vui lòng thử lại.');
-      } else if (status === 429) {
-        setErrorMessage('Quá nhiều lần thử đăng nhập không thành công. Vui lòng chờ 15 phút.');
-      } else {
-        setErrorMessage(
-          err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại kết nối.'
-        );
+      if (mountedRef.current) {
+        const status = err.response?.status;
+        if (status === 401) {
+          setErrorMessage('Email hoặc mật khẩu không chính xác. Vui lòng thử lại.');
+        } else if (status === 429) {
+          setErrorMessage('Quá nhiều lần thử đăng nhập không thành công. Vui lòng chờ 15 phút.');
+        } else {
+          setErrorMessage(
+            err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại kết nối.'
+          );
+        }
       }
     } finally {
-      setLoading(false);
+      if (mountedRef.current) {
+        setLoading(false);
+      }
     }
   };
 
@@ -134,23 +152,29 @@ export default function AuthPage() {
 
       // Tự động điền email vào form đăng nhập và chuyển tab sau 1.2s
       setLoginForm((prev) => ({ ...prev, email: registerForm.email }));
-      setTimeout(() => {
-        setActiveTab('login');
-        setSuccessMessage('Vui lòng đăng nhập với thông tin vừa tạo.');
+      tabTimerRef.current = setTimeout(() => {
+        if (mountedRef.current) {
+          setActiveTab('login');
+          setSuccessMessage('Vui lòng đăng nhập với thông tin vừa tạo.');
+        }
       }, 1200);
     } catch (err) {
-      const status = err.response?.status;
-      if (status === 409) {
-        setErrorMessage(
-          'Email này đã được sử dụng trong hệ thống. Vui lòng đăng nhập hoặc sử dụng email khác.'
-        );
-      } else {
-        setErrorMessage(
-          err.response?.data?.message || 'Đăng ký không thành công. Vui lòng thử lại.'
-        );
+      if (mountedRef.current) {
+        const status = err.response?.status;
+        if (status === 409) {
+          setErrorMessage(
+            'Email này đã được sử dụng trong hệ thống. Vui lòng đăng nhập hoặc sử dụng email khác.'
+          );
+        } else {
+          setErrorMessage(
+            err.response?.data?.message || 'Đăng ký không thành công. Vui lòng thử lại.'
+          );
+        }
       }
     } finally {
-      setLoading(false);
+      if (mountedRef.current) {
+        setLoading(false);
+      }
     }
   };
 
@@ -280,7 +304,11 @@ export default function AuthPage() {
 
             {/* Error Callout */}
             {errorMessage && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3.5 flex items-start gap-3 text-xs text-red-600 font-medium">
+              <div
+                role="alert"
+                aria-live="assertive"
+                className="bg-red-50 border border-red-200 rounded-lg p-3.5 flex items-start gap-3 text-xs text-red-600 font-medium"
+              >
                 <svg className="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
@@ -290,7 +318,11 @@ export default function AuthPage() {
 
             {/* Success Callout */}
             {successMessage && (
-              <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3.5 flex items-start gap-3 text-xs text-emerald-700 font-medium">
+              <div
+                role="status"
+                aria-live="polite"
+                className="bg-emerald-50 border border-emerald-200 rounded-lg p-3.5 flex items-start gap-3 text-xs text-emerald-700 font-medium"
+              >
                 <svg className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
@@ -348,6 +380,7 @@ export default function AuthPage() {
                       onClick={() => setShowLoginPassword((prev) => !prev)}
                       className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                       title={showLoginPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                      aria-label={showLoginPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                     >
                       <img
                         src={showLoginPassword ? eyeIcon : eyeOffIcon}
@@ -470,6 +503,7 @@ export default function AuthPage() {
                       onClick={() => setShowRegPassword((prev) => !prev)}
                       className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                       title={showRegPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                      aria-label={showRegPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                     >
                       <img
                         src={showRegPassword ? eyeIcon : eyeOffIcon}
@@ -551,6 +585,7 @@ export default function AuthPage() {
                       onClick={() => setShowRegConfirmPassword((prev) => !prev)}
                       className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                       title={showRegConfirmPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                      aria-label={showRegConfirmPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
                     >
                       <img
                         src={showRegConfirmPassword ? eyeIcon : eyeOffIcon}

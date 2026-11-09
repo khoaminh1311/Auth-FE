@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import AppLayout from '../components/layout/AppLayout';
 import { checkHealth as getBackendHealth } from '../services/api';
@@ -67,10 +67,34 @@ export default function AdminDashboardPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
+  // Theo dõi unmount & dọn dẹp timer (NEW-AUTH-07)
+  const mountedRef = useRef(true);
+  const timersRef = useRef([]);
+
+  const safeSetTimeout = (callback, delay) => {
+    const id = setTimeout(() => {
+      if (mountedRef.current) {
+        callback();
+      }
+    }, delay);
+    timersRef.current.push(id);
+    return id;
+  };
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      timersRef.current.forEach(clearTimeout);
+      timersRef.current = [];
+    };
+  }, []);
+
   // Kiểm tra sức khỏe hệ thống từ endpoint thật (/health)
   const checkHealth = async () => {
     try {
       const data = await getBackendHealth();
+      if (!mountedRef.current) return;
       if (data && data.status === 'ok') {
         setServerStatus('200 OK');
         setServerReadiness('Sẵn sàng');
@@ -79,8 +103,10 @@ export default function AdminDashboardPage() {
         setServerReadiness('Đang phản hồi');
       }
     } catch {
-      setServerStatus('Offline');
-      setServerReadiness('Không phản hồi');
+      if (mountedRef.current) {
+        setServerStatus('Offline');
+        setServerReadiness('Không phản hồi');
+      }
     }
   };
 
@@ -95,10 +121,10 @@ export default function AdminDashboardPage() {
       checkHealth(),
       typeof refreshUser === 'function' ? refreshUser() : Promise.resolve(),
     ]);
-    setTimeout(() => {
+    safeSetTimeout(() => {
       setRefreshing(false);
       setToastMessage('Đã làm mới dữ liệu hệ thống');
-      setTimeout(() => setToastMessage(''), 2500);
+      safeSetTimeout(() => setToastMessage(''), 2500);
     }, 600);
   };
 
@@ -229,7 +255,7 @@ export default function AdminDashboardPage() {
         {/* 3. RBAC Matrix Table (Ma trận Phân quyền Endpoint API)   */}
         {/* ======================================================== */}
         <div className="bg-white rounded-xl border border-[#E2E8F0] shadow-sm overflow-hidden">
-          
+
           {/* Section Header */}
           <div className="p-6 border-b border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>

@@ -1,14 +1,42 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import logoutIcon from '../../assets/icons/logout.svg';
 
 export default function LogoutModal({ isOpen, onClose, onConfirm, loading = false }) {
-  // Đóng modal khi nhấn phím Escape
+  const dialogRef = useRef(null);
+
+  // Focus trap & Auto-focus khi mở modal (NEW-A11Y-01)
   useEffect(() => {
+    if (!isOpen || !dialogRef.current) return;
+
+    const focusableElements = dialogRef.current.querySelectorAll(
+      'button:not([disabled]), [href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    firstElement?.focus();
+
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && isOpen && !loading) {
+      if (e.key === 'Escape' && !loading) {
         onClose();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault();
+            lastElement?.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement?.focus();
+          }
+        }
       }
     };
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose, loading]);
@@ -18,6 +46,7 @@ export default function LogoutModal({ isOpen, onClose, onConfirm, loading = fals
   return (
     <div
       id="logout-modal"
+      ref={dialogRef}
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
