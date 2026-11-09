@@ -36,10 +36,18 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       const url = error.config?.url || '';
-      // Không can thiệp chuyển hướng nếu là thao tác đăng nhập/đăng ký sai thông tin
+      const responseMessage = (error.response?.data?.message || '').toLowerCase();
+
+      // 1. Không can thiệp nếu là thao tác đăng nhập/đăng ký sai thông tin
       const isAuthAttempt = url.includes('/auth/login') || url.includes('/auth/register');
 
-      if (!isAuthAttempt) {
+      // 2. Không can thiệp nếu là thao tác đổi mật khẩu nhưng nhập sai mật khẩu hiện tại (Issue #12)
+      // Phân biệt lỗi nghiệp vụ kiểm tra mật khẩu cũ với lỗi JWT hết hạn/không hợp lệ
+      const isWrongCurrentPassword =
+        url.includes('/auth/change-password') &&
+        (responseMessage.includes('mật khẩu hiện tại') || responseMessage.includes('current password'));
+
+      if (!isAuthAttempt && !isWrongCurrentPassword) {
         removeToken();
         if (!window.location.pathname.includes('/login')) {
           const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
