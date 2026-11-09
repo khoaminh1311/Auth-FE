@@ -125,6 +125,14 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Xóa sạch phiên đăng nhập tại client trực tiếp (Issue #13: dùng khi token server đã bị thu hồi như sau khi đổi mật khẩu)
+  const clearSession = useCallback(() => {
+    removeToken();
+    tokenRef.current = null;
+    setTokenState(null);
+    setUser(null);
+  }, []);
+
   // Làm mới thông tin người dùng
   const refreshUser = async () => {
     const activeToken = tokenRef.current || getToken();
@@ -156,6 +164,7 @@ export function AuthProvider({ children }) {
     login,
     register,
     logout,
+    clearSession,
     refreshUser,
   };
 

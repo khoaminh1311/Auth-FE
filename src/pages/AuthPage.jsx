@@ -39,10 +39,24 @@ export default function AuthPage() {
   const [showRegPassword, setShowRegPassword] = useState(false);
   const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
 
-  // Status & Error States
+  // Status & Error States (Đồng bộ trực tiếp từ URL query params và Router state)
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+
+  const initialParams = new URLSearchParams(location.search || window.location.search);
+  const initialExpired = initialParams.get('expired') === 'true';
+  const initialChanged = initialParams.get('changed') === 'true';
+
+  const [errorMessage, setErrorMessage] = useState(() => {
+    return initialExpired
+      ? 'Phiên đăng nhập đã hết hạn hoặc mật khẩu đã thay đổi. Vui lòng đăng nhập lại.'
+      : '';
+  });
+  const [successMessage, setSuccessMessage] = useState(() => {
+    if (initialChanged) {
+      return 'Đổi mật khẩu thành công. Vui lòng đăng nhập lại bằng mật khẩu mới.';
+    }
+    return location.state?.message || '';
+  });
 
   // Quản lý timer chuyển tab sau đăng ký (NEW-AUTH-07)
   const tabTimerRef = useRef(null);
@@ -65,19 +79,14 @@ export default function AuthPage() {
     registerForm.confirmPassword
   );
 
-  // Kiểm tra query param expired (BUG-CRIT-01) hoặc state message (BUG-HIGH-01)
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('expired') === 'true') {
-      setErrorMessage('Phiên đăng nhập đã hết hạn hoặc mật khẩu đã thay đổi. Vui lòng đăng nhập lại.');
-    } else if (params.get('changed') === 'true') {
-      setSuccessMessage('Đổi mật khẩu thành công. Vui lòng đăng nhập lại bằng mật khẩu mới.');
-    }
-
-    if (location.state?.message) {
-      setSuccessMessage(location.state.message);
-    }
-  }, [location.state]);
+  // Đồng bộ state message nếu có điều hướng từ trang khác tới khi component đang mount
+  const currentParams = new URLSearchParams(location.search || window.location.search);
+  const isChangedNow = currentParams.get('changed') === 'true';
+  const displaySuccessMessage =
+    successMessage ||
+    (isChangedNow ? 'Đổi mật khẩu thành công. Vui lòng đăng nhập lại bằng mật khẩu mới.' : '') ||
+    location.state?.message ||
+    '';
 
   // Switch tabs
   const handleTabChange = (tab) => {
@@ -281,8 +290,8 @@ export default function AuthPage() {
               type="button"
               onClick={() => handleTabChange('login')}
               className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all cursor-pointer ${activeTab === 'login'
-                  ? 'bg-white text-secondary font-semibold shadow-sm'
-                  : 'text-slate-600 hover:text-secondary'
+                ? 'bg-white text-secondary font-semibold shadow-sm'
+                : 'text-slate-600 hover:text-secondary'
                 }`}
             >
               Đăng nhập
@@ -291,8 +300,8 @@ export default function AuthPage() {
               type="button"
               onClick={() => handleTabChange('register')}
               className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all cursor-pointer ${activeTab === 'register'
-                  ? 'bg-white text-secondary font-semibold shadow-sm'
-                  : 'text-slate-600 hover:text-secondary'
+                ? 'bg-white text-secondary font-semibold shadow-sm'
+                : 'text-slate-600 hover:text-secondary'
                 }`}
             >
               Đăng ký
@@ -317,7 +326,7 @@ export default function AuthPage() {
             )}
 
             {/* Success Callout */}
-            {successMessage && (
+            {displaySuccessMessage && (
               <div
                 role="status"
                 aria-live="polite"
@@ -326,7 +335,7 @@ export default function AuthPage() {
                 <svg className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span className="leading-relaxed">{successMessage}</span>
+                <span className="leading-relaxed">{displaySuccessMessage}</span>
               </div>
             )}
 
@@ -528,10 +537,10 @@ export default function AuthPage() {
                       {passwordStrength.label !== 'Chưa nhập' && (
                         <span
                           className={`font-semibold ${passwordStrength.level === 'weak'
-                              ? 'text-red-500'
-                              : passwordStrength.level === 'medium'
-                                ? 'text-amber-500'
-                                : 'text-emerald-600'
+                            ? 'text-red-500'
+                            : passwordStrength.level === 'medium'
+                              ? 'text-amber-500'
+                              : 'text-emerald-600'
                             }`}
                         >
                           {passwordStrength.label}
@@ -550,8 +559,8 @@ export default function AuthPage() {
                     {passwordMatch.checked && (
                       <span
                         className={`text-[11px] px-2 py-0.5 rounded-full font-medium border ${passwordMatch.isMatch
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                            : 'bg-red-50 text-red-700 border-red-200'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : 'bg-red-50 text-red-700 border-red-200'
                           }`}
                       >
                         {passwordMatch.label}
@@ -575,8 +584,8 @@ export default function AuthPage() {
                         }))
                       }
                       className={`block w-full pl-9 pr-10 py-2.5 rounded-lg border text-sm text-secondary placeholder-slate-400 focus:outline-none focus:ring-2 transition-colors ${passwordMatch.checked && !passwordMatch.isMatch
-                          ? 'border-red-400 focus:ring-red-200 focus:border-red-500'
-                          : 'border-card-border focus:ring-primary/20 focus:border-primary'
+                        ? 'border-red-400 focus:ring-red-200 focus:border-red-500'
+                        : 'border-card-border focus:ring-primary/20 focus:border-primary'
                         }`}
                     />
                     <button

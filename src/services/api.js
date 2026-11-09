@@ -47,6 +47,15 @@ apiClient.interceptors.response.use(
         url.includes('/auth/change-password') &&
         (responseMessage.includes('mật khẩu hiện tại') || responseMessage.includes('current password'));
 
+      // 3. Không chuyển hướng cứng nếu là thao tác đăng xuất (Issue #13)
+      // Khi logout bị 401 (token server đã hết hạn/bị thu hồi trước đó), chỉ xóa token client mà không ghi đè URL
+      const isLogoutAttempt = url.includes('/auth/logout');
+
+      if (isLogoutAttempt) {
+        removeToken();
+        return Promise.reject(error);
+      }
+
       if (!isAuthAttempt && !isWrongCurrentPassword) {
         removeToken();
         if (!window.location.pathname.includes('/login')) {
