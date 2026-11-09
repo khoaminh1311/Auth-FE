@@ -49,14 +49,23 @@ export async function changePassword({ currentPassword, newPassword }) {
 /**
  * 5. Đăng xuất
  * Endpoint: POST /api/auth/logout
+ * Chụp lại token cũ để gửi lên server với timeout riêng 5s, không phụ thuộc vào trạng thái client (Issue #14)
  */
-export async function logoutUser() {
+export async function logoutUser(oldToken) {
   try {
-    const response = await apiClient.post('/auth/logout');
+    const config = {
+      timeout: 5000, // Timeout giới hạn 5s cho request logout
+    };
+    if (oldToken) {
+      config.headers = {
+        Authorization: `Bearer ${oldToken}`,
+      };
+    }
+    const response = await apiClient.post('/auth/logout', null, config);
     return response.data;
   } catch (err) {
-    // Vẫn cho phép hoàn tất logout ở client ngay cả khi mạng lỗi
-    console.warn('Lỗi gọi API logout (server side):', err);
+    // Vẫn cho phép hoàn tất logout ở client ngay cả khi mạng lỗi hoặc server timeout
+    console.warn('Lỗi gọi API logout (server side):', err?.message || err);
     return { success: true };
   }
 }

@@ -113,15 +113,25 @@ export function AuthProvider({ children }) {
     return data;
   };
 
-  // Hành động Đăng xuất (Stateless: xóa token client)
+  // Hành động Đăng xuất (Stateless: xóa token client ngay lập tức, gửi thông báo server độc lập - Issue #14)
   const logout = async () => {
-    try {
-      await logoutUser();
-    } finally {
-      removeToken();
-      tokenRef.current = null;
-      setTokenState(null);
-      setUser(null);
+    // 1. Chụp lại snapshot token của phiên cũ trước khi xóa
+    const tokenToRevoke = tokenRef.current || getToken();
+
+    // 2. Kết thúc phiên phía client NGAY LẬP TỨC: xóa storage và reset state React
+    // Người dùng được rời khỏi trang bảo vệ ngay mà không phải chờ server phản hồi
+    removeToken();
+    tokenRef.current = null;
+    setTokenState(null);
+    setUser(null);
+
+    // 3. Gửi request thông báo thu hồi token lên server độc lập (có timeout, không ảnh hưởng client)
+    if (tokenToRevoke) {
+      try {
+        await logoutUser(tokenToRevoke);
+      } catch (err) {
+        console.warn('Lỗi gọi API logout server-side:', err);
+      }
     }
   };
 

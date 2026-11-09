@@ -13,6 +13,7 @@ export function setTokenProvider(getter) {
 // Khởi tạo instance Axios dùng chung
 export const apiClient = axios.create({
   baseURL: API_URL,
+  timeout: 10000, // Cấu hình timeout mặc định 10s cho toàn bộ HTTP client, ngăn treo request vô hạn (Issue #14)
   headers: {
     'Content-Type': 'application/json',
   },
