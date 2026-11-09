@@ -89,11 +89,14 @@ cp .env.example .env
 Nội dung file `.env`:
 
 ```env
-# Backend API Base URL (mặc định port 3000)
-VITE_API_URL=http://localhost:3000/api
+# 1. Khi phát triển cục bộ (Local Development):
+# VITE_API_URL=http://localhost:3000/api
+
+# 2. Khi kết nối Backend Production (Render):
+VITE_API_URL=https://auth-api-f540.onrender.com/api
 ```
 
-> **Ghi chú về Endpoint Health Check:** Hàm kiểm tra sức khỏe máy chủ `checkHealth()` trong `src/services/api.js` tự động nhận diện gọi về `http://localhost:3000/health` (endpoint kiểm tra trạng thái root của server) thay vì `/api/health`.
+> **Ghi chú về Endpoint Health Check:** Hàm kiểm tra sức khỏe máy chủ `checkHealth()` trong `src/services/api.js` tự động nhận diện gọi về endpoint root `/health` (ví dụ: `https://auth-api-f540.onrender.com/health` hoặc `http://localhost:3000/health`) thay vì `/api/health`.
 
 ---
 
@@ -128,7 +131,25 @@ npm run preview
 
 ---
 
-## 5. Chi tiết 4 Màn hình Giao diện Chuẩn Figma
+## 5. Hướng dẫn Triển khai lên Vercel (Deployment)
+
+Dự án đã được cấu hình sẵn file `vercel.json` định tuyến SPA (Single Page Application) để ngăn chặn lỗi `404: NOT_FOUND` khi người dùng F5 tải lại các trang con (`/dashboard`, `/change-password`, `/admin`):
+
+1. **Đăng nhập Vercel** ([vercel.com](https://vercel.com)) và chọn **"Add New..."** $\rightarrow$ **"Project"**.
+2. **Import** kho mã nguồn GitHub của dự án (`Auth-FE`).
+3. **Cấu hình Project Settings:**
+   * **Framework Preset:** `Vite` (Vercel tự động nhận diện).
+   * **Root Directory:** `./`
+   * **Build Command:** `npm run build`
+   * **Output Directory:** `dist`
+4. **Cấu hình Environment Variables (Bắt buộc):**
+   * **Key:** `VITE_API_URL`
+   * **Value:** `https://auth-api-f540.onrender.com/api`
+5. Nhấn **"Deploy"** để hoàn tất triển khai.
+
+---
+
+## 6. Chi tiết 4 Màn hình Giao diện Chuẩn Figma
 
 Dự án được thiết kế đồng bộ 100% với từng chi tiết trên bản vẽ Figma:
 
@@ -184,7 +205,7 @@ Dự án được thiết kế đồng bộ 100% với từng chi tiết trên b
 
 ---
 
-## 6. Điểm Nhấn Kỹ thuật & Tối ưu Bảo mật (Technical Highlights)
+## 7. Điểm Nhấn Kỹ thuật & Tối ưu Bảo mật (Technical Highlights)
 
 1. **Quản lý Token Linh hoạt (Storage Strategy):** Hỗ trợ linh hoạt cả `localStorage` (phiên dài hạn) và `sessionStorage` (phiên ngắn hạn theo tab khi không tích "Ghi nhớ đăng nhập").
 2. **Tự động Thu hồi Phiên với 401 Interceptor:** Khi token hết hạn hoặc mật khẩu bị đổi từ thiết bị khác, Axios interceptor tự động xóa token và chuyển hướng về `/login?expired=true` kèm thông báo lỗi rõ ràng.
@@ -196,7 +217,7 @@ Dự án được thiết kế đồng bộ 100% với từng chi tiết trên b
 
 ---
 
-## 7. Bảng Màu Hệ Thống (Enterprise Blueprint Tokens)
+## 8. Bảng Màu Hệ Thống (Enterprise Blueprint Tokens)
 
 | Token | Mã màu | Ý nghĩa sử dụng |
 | :--- | :--- | :--- |

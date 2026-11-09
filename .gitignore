@@ -24,3 +24,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+FRONTEND_IMPLEMENTATION_PLAN.md
+SESSION_HANDOVER.md
