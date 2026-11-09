@@ -181,10 +181,12 @@ export function AuthProvider({ children }) {
     setUser(null);
   }, []);
 
-  // Làm mới thông tin người dùng
+  // Làm mới thông tin người dùng (Issue #16: ném lỗi ra ngoài caller khi thất bại để UI phản hồi chính xác)
   const refreshUser = async () => {
     const activeToken = tokenRef.current || getToken();
-    if (!activeToken) return null;
+    if (!activeToken) {
+      throw new Error('Không tìm thấy token phiên làm việc');
+    }
     try {
       tokenRef.current = activeToken;
       setTokenState(activeToken);
@@ -200,7 +202,7 @@ export function AuthProvider({ children }) {
         setTokenState(null);
         setUser(null);
       }
-      return null;
+      throw err;
     }
   };
 

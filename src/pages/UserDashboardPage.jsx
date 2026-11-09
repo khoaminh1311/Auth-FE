@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { decodeJwt } from '../utils/token';
@@ -22,10 +22,10 @@ export default function UserDashboardPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [copiedId, setCopiedId] = useState(false);
   const [copiedJson, setCopiedJson] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
+  const [toast, setToast] = useState({ message: '', type: 'success' }); // 'success' | 'error' (Issue #16)
 
-  // Decoded Claims from current JWT
-  const [jwtClaims, setJwtClaims] = useState(null);
+  // Decoded Claims from current JWT (Derived via useMemo - no cascading setState)
+  const jwtClaims = useMemo(() => (token ? decodeJwt(token) : null), [token]);
 
   // Mounted tracking & timer management (NEW-AUTH-07)
   const mountedRef = useRef(true);
@@ -41,6 +41,12 @@ export default function UserDashboardPage() {
     return id;
   };
 
+  const showToast = (message, type = 'success') => {
+    if (!mountedRef.current) return;
+    setToast({ message, type });
+    safeSetTimeout(() => setToast({ message: '', type: 'success' }), 2500);
+  };
+
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -50,28 +56,22 @@ export default function UserDashboardPage() {
     };
   }, []);
 
-  // Update JWT Claims khi token thay đổi
-  useEffect(() => {
-    if (token) {
-      const decoded = decodeJwt(token);
-      setJwtClaims(decoded);
-    }
-  }, [token]);
-
-  // Handle Refresh Data
+  // Handle Refresh Data (Issue #16: phản hồi chính xác kết quả thành công / thất bại)
   const handleRefreshData = async () => {
     try {
       setRefreshing(true);
-      if (refreshUser) {
+      if (typeof refreshUser === 'function') {
         await refreshUser();
       }
-      if (token && mountedRef.current) {
-        setJwtClaims(decodeJwt(token));
-      }
-      if (mountedRef.current) {
-        setToastMessage('Đã làm mới dữ liệu phiên làm việc');
-        safeSetTimeout(() => setToastMessage(''), 2500);
-      }
+      showToast('Đã làm mới dữ liệu phiên làm việc', 'success');
+    } catch (err) {
+      const errorMsg =
+        !err.response || err.code === 'ERR_NETWORK' || err.message?.includes('timeout')
+          ? 'Không thể kết nối máy chủ. Vui lòng kiểm tra lại mạng.'
+          : err.response?.status >= 500
+            ? 'Máy chủ phản hồi lỗi. Vui lòng thử lại sau.'
+            : 'Không thể làm mới dữ liệu phiên làm việc.';
+      showToast(errorMsg, 'error');
     } finally {
       safeSetTimeout(() => setRefreshing(false), 500);
     }
@@ -439,10 +439,18 @@ export default function UserDashboardPage() {
       </div>
 
       {/* Toast Notification */}
-      {toastMessage && (
+      {toast.message && (
         <div className="fixed bottom-6 right-6 z-50 bg-[#0F172A] text-white px-4 py-2.5 rounded-lg shadow-lg text-sm flex items-center gap-2 animate-bounce">
-          <span className="w-2 h-2 rounded-full bg-[#10B981]" />
-          <span>{toastMessage}</span>
+          <span
+            className={`w-2 h-2 rounded-full ${
+              toast.type === 'error'
+                ? 'bg-red-500'
+                : toast.type === 'warning'
+                  ? 'bg-amber-400'
+                  : 'bg-[#10B981]'
+            }`}
+          />
+          <span>{toast.message}</span>
         </div>
       )}
     </AppLayout>

@@ -65,7 +65,7 @@ export default function AdminDashboardPage() {
   const [serverReadiness, setServerReadiness] = useState('Sẵn sàng');
   const [rateLimitText] = useState('20 req / 15m');
   const [refreshing, setRefreshing] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
+  const [toast, setToast] = useState({ message: '', type: 'success' }); // 'success' | 'warning' | 'error' (Issue #16)
 
   // Theo dõi unmount & dọn dẹp timer (NEW-AUTH-07)
   const mountedRef = useRef(true);
@@ -81,6 +81,12 @@ export default function AdminDashboardPage() {
     return id;
   };
 
+  const showToast = (message, type = 'success') => {
+    if (!mountedRef.current) return;
+    setToast({ message, type });
+    safeSetTimeout(() => setToast({ message: '', type: 'success' }), 2500);
+  };
+
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -94,7 +100,7 @@ export default function AdminDashboardPage() {
   const checkHealth = async () => {
     try {
       const data = await getBackendHealth();
-      if (!mountedRef.current) return;
+      if (!mountedRef.current) return data;
       if (data && data.status === 'ok') {
         setServerStatus('200 OK');
         setServerReadiness('Sẵn sàng');
@@ -102,30 +108,64 @@ export default function AdminDashboardPage() {
         setServerStatus('200 OK');
         setServerReadiness('Đang phản hồi');
       }
-    } catch {
+      return data;
+    } catch (err) {
       if (mountedRef.current) {
         setServerStatus('Offline');
         setServerReadiness('Không phản hồi');
       }
+      throw err;
     }
   };
 
   useEffect(() => {
-    checkHealth();
+    getBackendHealth()
+      .then((data) => {
+        if (mountedRef.current) {
+          if (data && data.status === 'ok') {
+            setServerStatus('200 OK');
+            setServerReadiness('Sẵn sàng');
+          } else {
+            setServerStatus('200 OK');
+            setServerReadiness('Đang phản hồi');
+          }
+        }
+      })
+      .catch(() => {
+        if (mountedRef.current) {
+          setServerStatus('Offline');
+          setServerReadiness('Không phản hồi');
+        }
+      });
   }, []);
 
+  // Làm mới dữ liệu hệ thống (Issue #16: phân loại toàn bộ thành công, một phần thành công, toàn bộ thất bại)
   const handleRefreshData = async () => {
     setRefreshing(true);
-    // Thực sự gọi làm mới dữ liệu từ cả 2 endpoint thật (/health và /api/auth/me)
-    await Promise.allSettled([
-      checkHealth(),
-      typeof refreshUser === 'function' ? refreshUser() : Promise.resolve(),
-    ]);
-    safeSetTimeout(() => {
-      setRefreshing(false);
-      setToastMessage('Đã làm mới dữ liệu hệ thống');
-      safeSetTimeout(() => setToastMessage(''), 2500);
-    }, 600);
+    try {
+      // Thực sự gọi làm mới dữ liệu từ cả 2 endpoint thật (/health và /api/auth/me)
+      const [healthResult, profileResult] = await Promise.allSettled([
+        checkHealth(),
+        typeof refreshUser === 'function' ? refreshUser() : Promise.resolve(),
+      ]);
+
+      const isHealthOk = healthResult.status === 'fulfilled';
+      const isProfileOk = profileResult.status === 'fulfilled';
+
+      if (isHealthOk && isProfileOk) {
+        showToast('Đã làm mới dữ liệu hệ thống', 'success');
+      } else if (isHealthOk && !isProfileOk) {
+        showToast('Đã cập nhật trạng thái server, nhưng không thể làm mới profile', 'warning');
+      } else if (!isHealthOk && isProfileOk) {
+        showToast('Đã làm mới profile, nhưng không thể kết nối server health', 'warning');
+      } else {
+        showToast('Làm mới dữ liệu thất bại. Không thể kết nối đến máy chủ', 'error');
+      }
+    } finally {
+      safeSetTimeout(() => {
+        setRefreshing(false);
+      }, 500);
+    }
   };
 
   return (
@@ -310,10 +350,18 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Toast Notification */}
-      {toastMessage && (
+      {toast.message && (
         <div className="fixed bottom-6 right-6 z-50 bg-[#0F172A] text-white px-4 py-2.5 rounded-lg shadow-lg text-sm flex items-center gap-2 animate-bounce">
-          <span className="w-2 h-2 rounded-full bg-[#10B981]" />
-          <span>{toastMessage}</span>
+          <span
+            className={`w-2 h-2 rounded-full ${
+              toast.type === 'error'
+                ? 'bg-red-500'
+                : toast.type === 'warning'
+                  ? 'bg-amber-400'
+                  : 'bg-[#10B981]'
+            }`}
+          />
+          <span>{toast.message}</span>
         </div>
       )}
     </AppLayout>
