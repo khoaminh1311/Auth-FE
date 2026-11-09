@@ -17,7 +17,8 @@ export default function ProtectedRoute({ children, requiredRole }) {
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    const search = location.search || '';
+    return <Navigate to={`/login${search}`} state={{ from: location }} replace />;
   }
 
   if (requiredRole === 'admin' && user?.role !== 'admin') {

@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { changePassword } from '../services/authService';
 import { evaluatePassword, checkPasswordMatch } from '../utils/passwordValidator';
@@ -15,8 +14,7 @@ import cancelSessionIcon from '../assets/icons/cancel_session.svg';
 import clockSpinIcon from '../assets/icons/clock_spin.svg';
 
 export default function ChangePasswordPage() {
-  const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, clearSession } = useAuth();
 
   // Form States
   const [formData, setFormData] = useState({
@@ -115,15 +113,15 @@ export default function ChangePasswordPage() {
         'Đổi mật khẩu thành công! Toàn bộ phiên cũ đã được thu hồi. Đang chuyển về trang đăng nhập sau 2 giây...'
       );
 
-      // Đợi 2s để người dùng đọc thông báo, sau đó tự động đăng xuất và điều hướng (BUG-HIGH-01, NEW-AUTH-07)
-      redirectTimerRef.current = setTimeout(async () => {
-        await logout();
-        if (mountedRef.current) {
-          navigate('/login?changed=true', {
-            state: { message: 'Đổi mật khẩu thành công. Vui lòng đăng nhập lại bằng mật khẩu mới.' },
-            replace: true,
-          });
+      // Đợi 2s để người dùng đọc thông báo, sau đó xóa phiên client và chuyển trang về login với thông báo thành công (Issue #13)
+      redirectTimerRef.current = setTimeout(() => {
+        if (clearSession) {
+          clearSession();
+        } else {
+          removeToken();
         }
+        const basePath = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+        window.location.href = `${basePath}/login?changed=true`;
       }, 2000);
     } catch (err) {
       if (mountedRef.current) {
