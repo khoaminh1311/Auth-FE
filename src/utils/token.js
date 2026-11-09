@@ -89,3 +89,17 @@ export function decodeJwt(token) {
     return null;
   }
 }
+
+/**
+ * Kiểm tra xem JWT token đã hết hạn hay chưa (hoặc định dạng có hợp lệ không) (Issue #15)
+ * @param {string|null} token 
+ * @returns {boolean} true nếu token không tồn tại, lỗi định dạng, thiếu exp hoặc đã quá hạn
+ */
+export function isTokenExpired(token) {
+  if (!token || typeof token !== 'string') return true;
+  const decoded = decodeJwt(token);
+  // Token không decode được hoặc thiếu exp / id thì coi như không hợp lệ / đã hết hạn
+  if (!decoded || !decoded.exp || !decoded.id) return true;
+  // exp trong JWT chuẩn tính bằng giây, Date.now() tính bằng mili-giây
+  return decoded.exp * 1000 <= Date.now();
+}

@@ -1,5 +1,13 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
-import { getToken, setToken, removeToken, decodeJwt, TOKEN_KEY, hasSessionToken } from '../utils/token';
+import {
+  getToken,
+  setToken,
+  removeToken,
+  decodeJwt,
+  isTokenExpired,
+  TOKEN_KEY,
+  hasSessionToken,
+} from '../utils/token';
 import { setTokenProvider } from '../services/api';
 import {
   loginUser,
@@ -11,7 +19,10 @@ import {
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [token, setTokenState] = useState(() => getToken());
+  const [token, setTokenState] = useState(() => {
+    const stored = getToken();
+    return stored && !isTokenExpired(stored) ? stored : null;
+  });
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -36,6 +47,17 @@ export function AuthProvider({ children }) {
       return;
     }
 
+    // 1. Kiểm tra tính toàn vẹn và hạn sử dụng của token phía client trước (Issue #15)
+    if (isTokenExpired(currentToken)) {
+      console.warn('Token trong bộ nhớ đã hết hạn hoặc định dạng không hợp lệ, tự động thu hồi phiên');
+      removeToken();
+      tokenRef.current = null;
+      setTokenState(null);
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     try {
       tokenRef.current = currentToken;
       setTokenState(currentToken);
@@ -50,12 +72,28 @@ export function AuthProvider({ children }) {
         setTokenState(null);
         setUser(null);
       } else {
-        // Lỗi mạng hoặc máy chủ không phản hồi: bảo toàn token, không xóa phiên
+        // Lỗi mạng hoặc máy chủ không phản hồi (/auth/me failed)
         console.warn('Không thể kết nối đến máy chủ để xác thực token:', err.message);
-        setTokenState(currentToken);
-        const decoded = decodeJwt(currentToken);
-        if (decoded?.id) {
-          setUser((prev) => prev || { id: decoded.id, role: 'user' });
+
+        // Chỉ cho phép khôi phục phiên offline nếu token thực sự CHƯA hết hạn (Issue #15)
+        if (!isTokenExpired(currentToken)) {
+          setTokenState(currentToken);
+          const decoded = decodeJwt(currentToken);
+          if (decoded?.id) {
+            setUser((prev) => prev || {
+              id: decoded.id,
+              role: decoded.role || 'user',
+              name: decoded.name || 'Người dùng (Ngoại tuyến)',
+              email: decoded.email || 'offline@portal',
+              isOffline: true, // Biểu diễn trạng thái phiên chưa được server xác thực chữ ký (Issue #15)
+            });
+          }
+        } else {
+          // Token đã hết hạn khi mất mạng -> xóa sạch phiên client, không khôi phục
+          removeToken();
+          tokenRef.current = null;
+          setTokenState(null);
+          setUser(null);
         }
       }
     } finally {
@@ -166,10 +204,13 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const isAuth = Boolean(token && user && !isTokenExpired(token));
+
   const value = {
     user,
     token,
-    isAuthenticated: Boolean(token && user),
+    isAuthenticated: isAuth,
+    isOffline: Boolean(user?.isOffline),
     loading,
     login,
     register,
